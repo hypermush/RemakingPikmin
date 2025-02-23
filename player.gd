@@ -16,6 +16,7 @@ var _last_movement_direction := Vector3.FORWARD
 @export var zoom_close := 4.0
 @export var zoom_middle := 7.0
 @export var zoom_far := 12.0
+var camera_zoom_target: float = zoom_middle
 
 # camera angles (in degrees)
 @export var angle_over_shoulder := -22.0 * (PI / 180)
@@ -24,6 +25,13 @@ var _last_movement_direction := Vector3.FORWARD
 # camera angle enums
 enum CameraAngles {over_shoulder, birds_eye}
 @export var _current_angle_enum = CameraAngles.over_shoulder
+var camera_angle_target: float = angle_over_shoulder
+
+@export var camera_tolerance := 0.01
+@export var camera_update_speed := 12.0
+var min_speed = 5.0
+var update_camera_rotation = false
+var camera_rotation_target := 0.0
 
 @export_group("Movement")
 # How fast the player moves in meters per second.
@@ -97,36 +105,67 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("camera_angle"):
 		toggle_camera_angle()
 	if Input.is_action_just_pressed("camera_back"):
-		center_camera_back()
+		Log.print("Camera Back")
+		update_camera_rotation = true
+		camera_rotation_target = _skin.global_rotation.y
 	if Input.is_action_just_pressed("camera_zoom"):
 		toggle_camera_zoom()
+		
+	# check if camera needs to move
+	# camera back
+	if update_camera_rotation:
+		var angle_diff = fposmod(camera_rotation_target - _camera_pivot.rotation.y + PI, TAU) - PI  # Normalize to [-PI, PI]
+		
+		if absf(angle_diff) > camera_tolerance:
+			var t = absf(angle_diff) / PI  # Normalize [0, 1] based on how far we have to rotate
+			var eased_speed = ease(t, -1.5) * camera_update_speed  # Smooth curve
+
+			# Ensure a minimum rotation speed to prevent slow creep
+			eased_speed = max(eased_speed, min_speed)
+
+			_camera_pivot.rotation.y += sign(angle_diff) * min(absf(angle_diff), delta * eased_speed)
+		else:
+			update_camera_rotation = false
+	# now do camera zoom
+	var zoom_diff = camera_zoom_target - _camera_spring.spring_length
+
+	if absf(zoom_diff) > camera_tolerance:  # Use tolerance to stop smoothly
+		var t = absf(zoom_diff) / (zoom_far - zoom_close)  # Normalize [0, 1]
+		var eased_speed = ease(t, -1.5) * camera_update_speed  # Use same curve
+
+		eased_speed = max(eased_speed, min_speed)  # Ensure minimum speed
+		_camera_spring.spring_length += sign(zoom_diff) * min(absf(zoom_diff), delta * eased_speed)
+	# finally camera angle
+	var angle_diff = camera_angle_target - _camera_pivot.rotation.x
+
+	if absf(angle_diff) > camera_tolerance:
+		var t = absf(angle_diff) / absf(angle_birds_eye - angle_over_shoulder)  # Normalize [0, 1]
+		var eased_speed = ease(t, -1.5) * camera_update_speed  
+
+		eased_speed = max(eased_speed, min_speed)  # Ensure minimum speed
+		_camera_pivot.rotation.x += sign(angle_diff) * min(absf(angle_diff), delta * eased_speed)
 		
 # toggle between over the shoulder and bird's eye view
 func toggle_camera_angle():
 	if _current_angle_enum == CameraAngles.birds_eye:
-		_camera_pivot.rotation.x = angle_over_shoulder
+		camera_angle_target = angle_over_shoulder
 		_current_angle_enum = CameraAngles.over_shoulder
 		Log.print("Camera Angle over shoulder")
 	elif _current_angle_enum == CameraAngles.over_shoulder:
-		_camera_pivot.rotation.x = angle_birds_eye
+		camera_angle_target = angle_birds_eye
 		_current_angle_enum = CameraAngles.birds_eye
 		Log.print("Camera Angle birds eye")
-		
-# bring camera back behind player (face camera forward)
-func center_camera_back():
-	Log.print("Camera Back")
-	_camera_pivot.rotation.y = _skin.global_rotation.y
 	
 # toggle between three zoom levels
 func toggle_camera_zoom():
-	if _camera_spring.spring_length == zoom_middle:
-		_camera_spring.spring_length = zoom_far
+	if camera_zoom_target == zoom_middle:
+		camera_zoom_target = zoom_far
 		Log.print("Camera Zoom Far")
-	elif _camera_spring.spring_length == zoom_far:
-		_camera_spring.spring_length = zoom_close
+	elif camera_zoom_target == zoom_far:
+		camera_zoom_target = zoom_close
 		Log.print("Camera Zoom Close")
-	elif _camera_spring.spring_length == zoom_close:
-		_camera_spring.spring_length = zoom_middle
+	elif camera_zoom_target == zoom_close:
+		camera_zoom_target = zoom_middle
 		Log.print("Camera Zoom Middle")
 		
 func _unhandled_input(event: InputEvent) -> void:

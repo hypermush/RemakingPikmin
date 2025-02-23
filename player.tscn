@@ -28,7 +28,7 @@ shape = SubResource("ConvexPolygonShape3D_wq2mh")
 
 [node name="CameraPivot" type="Node3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.762668, 0.64679, 0, -0.64679, 0.762668, 0, 0.562086, 0)
+transform = Transform3D(1, 0, 0, 0, 0.816137, 0.577858, 0, -0.577858, 0.816137, 0, 0.562086, 0)
 
 [node name="CameraSpringArm" type="SpringArm3D" parent="CameraPivot"]
 unique_name_in_owner = true
