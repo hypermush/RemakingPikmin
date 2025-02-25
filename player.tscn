@@ -12,6 +12,7 @@ points = PackedVector3Array(-0.125207, -0.532801, -0.480507, 0.0227831, 0.47607,
 [sub_resource type="SphereShape3D" id="SphereShape3D_jouno"]
 
 [node name="Player" type="CharacterBody3D"]
+collision_layer = 3
 script = ExtResource("1_0nf4c")
 
 [node name="PlayerSkin" type="MeshInstance3D" parent="."]

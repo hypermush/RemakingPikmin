@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=11 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://player.tscn" id="1_4o623"]
+[ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://interaction_zone.tscn" id="2_gp7im"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l1rx6"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -92,3 +93,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, -8.33596e-08, -0.301322, 0.953523, -2.63424e-08, 0.953523, 0.301322, 0, 16.1193, 0)
+
+[node name="InteractionZone" parent="." instance=ExtResource("2_gp7im")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.56022, 0, 3.40577)
