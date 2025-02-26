@@ -4,6 +4,8 @@ extends CharacterBody3D
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
 
+var current_interaction_zone: Node3D = null  # Tracks the zone the player is in
+
 var _camera_input_direction := Vector2.ZERO
 var _last_movement_direction := Vector3.FORWARD
 
@@ -145,6 +147,14 @@ func _physics_process(delta: float) -> void:
 		eased_speed = max(eased_speed, min_speed)  # Ensure minimum speed
 		_camera_pivot.rotation.x += sign(angle_diff) * min(absf(angle_diff), delta * eased_speed)
 		
+	# interaction (A press)
+	if Input.is_action_just_pressed("interact"):
+		if current_interaction_zone:
+			# Call a function on the zone to handle interaction
+			current_interaction_zone.interact()
+		else:
+			Log.print("No interaction available.")
+	
 # toggle between over the shoulder and bird's eye view
 func toggle_camera_angle():
 	if _current_angle_enum == CameraAngles.birds_eye:
@@ -168,6 +178,9 @@ func toggle_camera_zoom():
 		camera_zoom_target = zoom_middle
 		Log.print("Camera Zoom Middle")
 		
+func set_interaction_zone(zone):
+	current_interaction_zone = zone
+
 func _unhandled_input(event: InputEvent) -> void:
 	pass
 

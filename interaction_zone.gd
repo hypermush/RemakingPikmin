@@ -1,18 +1,52 @@
 extends Node3D
 
+# placeholder values
+enum InteractionType {
+	SHIP,
+	DOOR,
+	NPC,
+	CHEST
+}
+
 @onready var _halo_mesh: MeshInstance3D = %ZoneHalo
 @onready var _interact_zone: Area3D = %Area3D
 
+@export var interaction_type: InteractionType = InteractionType.SHIP
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	_interact_zone.body_entered.connect(bodyEntered)
+	_interact_zone.body_exited.connect(bodyExited)
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if _interact_zone.has_overlapping_bodies():
-		Log.print("Body entered: " + str(_interact_zone.get_overlapping_bodies()))
+	pass
 
 # trying to detect when a body enters (signal)
-func _bodyEntered():
-	pass
+func bodyEntered(body: Node3D):
+	if body.is_in_group("Player"):
+		body.current_interaction_zone = self  # Store reference to this zone
+		Log.print("Player entered interaction zone.")
+		
+func bodyExited(body: Node3D):
+	if body.is_in_group("Player"):
+		body.current_interaction_zone = null  # Clear reference
+		Log.print("Player left interaction zone.")
+		
+func interact():
+	match interaction_type:
+		InteractionType.SHIP:
+			#open_ship_menu()
+			pass
+		InteractionType.DOOR:
+			#open_door()
+			pass
+		InteractionType.NPC:
+			#start_npc_dialogue()
+			pass
+		InteractionType.CHEST:
+			#open_chest()
+			pass
+	Log.print("Interaction happened: " + InteractionType.find_key(interaction_type))
