@@ -8,6 +8,10 @@ enum InteractionType {
 	CHEST
 }
 
+# UI nonsense
+@onready var _sub_viewport: SubViewport = %SubViewport  # Reference to the SubViewport
+@onready var _sprite: Sprite3D = %Sprite3D  # Reference to the Sprite3D node
+
 @onready var _halo_mesh: MeshInstance3D = %ZoneHalo
 @onready var _interact_zone: Area3D = %Area3D
 
@@ -17,6 +21,8 @@ enum InteractionType {
 func _ready() -> void:
 	_interact_zone.body_entered.connect(bodyEntered)
 	_interact_zone.body_exited.connect(bodyExited)
+	
+	_sprite.texture = _sub_viewport.get_texture()  # Set the SubViewport's texture as the sprite's texture
 	pass
 
 
