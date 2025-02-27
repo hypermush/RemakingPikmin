@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://hknnxwg8cib"]
+[gd_scene load_steps=9 format=3 uid="uid://hknnxwg8cib"]
 
 [ext_resource type="Script" path="res://interaction_zone.gd" id="1_khjci"]
+[ext_resource type="PackedScene" uid="uid://bsueyaudgcokx" path="res://interaction_ui.tscn" id="2_ua8lj"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_mbmix"]
 
@@ -11,6 +12,17 @@ albedo_color = Color(0.32549, 0, 0.247059, 0.803922)
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_lqjbj"]
 height = 0.504914
 radius = 1.99993
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_2lt2y"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kuget"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_2lt2y")
+
+[sub_resource type="QuadMesh" id="QuadMesh_0tfox"]
 
 [node name="InteractionZone" type="Node3D"]
 script = ExtResource("1_khjci")
@@ -32,23 +44,17 @@ shape = SubResource("CylinderShape3D_lqjbj")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 unique_name_in_owner = true
+transparent_bg = true
+size = Vector2i(2317, 942)
 
-[node name="Control" type="Control" parent="SubViewport"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -512.0
-offset_bottom = -512.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="Label" type="Label" parent="SubViewport/Control"]
-layout_mode = 0
-offset_right = 142.0
-offset_bottom = 23.0
-text = "Press A to interact"
+[node name="Control" parent="SubViewport" instance=ExtResource("2_ua8lj")]
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 unique_name_in_owner = true
+billboard = 1
+
+[node name="UIMesh" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(6.235, 0, 0, 0, 2.17, 0, 0, 0, 1, 0, 1.12134, 0)
+material_override = SubResource("StandardMaterial3D_kuget")
+mesh = SubResource("QuadMesh_0tfox")

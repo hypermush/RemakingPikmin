@@ -11,6 +11,7 @@ enum InteractionType {
 # UI nonsense
 @onready var _sub_viewport: SubViewport = %SubViewport  # Reference to the SubViewport
 @onready var _sprite: Sprite3D = %Sprite3D  # Reference to the Sprite3D node
+@onready var _uimesh: MeshInstance3D = %UIMesh
 
 @onready var _halo_mesh: MeshInstance3D = %ZoneHalo
 @onready var _interact_zone: Area3D = %Area3D
@@ -22,7 +23,12 @@ func _ready() -> void:
 	_interact_zone.body_entered.connect(bodyEntered)
 	_interact_zone.body_exited.connect(bodyExited)
 	
+	# sprite version to do away with
 	_sprite.texture = _sub_viewport.get_texture()  # Set the SubViewport's texture as the sprite's texture
+	_sprite.visible = false
+	
+	# mesh way that we like
+	_uimesh.visible = false
 	pass
 
 
@@ -34,11 +40,15 @@ func _process(delta: float) -> void:
 func bodyEntered(body: Node3D):
 	if body.is_in_group("Player"):
 		body.current_interaction_zone = self  # Store reference to this zone
+		#_sprite.visible = true  # Show interaction UI
+		_uimesh.visible = true
 		Log.print("Player entered interaction zone.")
 		
 func bodyExited(body: Node3D):
 	if body.is_in_group("Player"):
 		body.current_interaction_zone = null  # Clear reference
+		_sprite.visible = false  # Hide interaction UI when leaving
+		_uimesh.visible = false
 		Log.print("Player left interaction zone.")
 		
 func interact():
