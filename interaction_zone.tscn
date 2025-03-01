@@ -45,16 +45,12 @@ shape = SubResource("CylinderShape3D_lqjbj")
 [node name="SubViewport" type="SubViewport" parent="."]
 unique_name_in_owner = true
 transparent_bg = true
-size = Vector2i(2317, 942)
+size = Vector2i(1687, 617)
 
 [node name="Control" parent="SubViewport" instance=ExtResource("2_ua8lj")]
 
-[node name="Sprite3D" type="Sprite3D" parent="."]
-unique_name_in_owner = true
-billboard = 1
-
 [node name="UIMesh" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(6.235, 0, 0, 0, 2.17, 0, 0, 0, 1, 0, 1.12134, 0)
+transform = Transform3D(4.07, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12134, 0)
 material_override = SubResource("StandardMaterial3D_kuget")
 mesh = SubResource("QuadMesh_0tfox")

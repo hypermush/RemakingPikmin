@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=14 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://player.tscn" id="1_4o623"]
 [ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://interaction_zone.tscn" id="2_gp7im"]
@@ -29,6 +29,13 @@ data = PackedVector3Array(5, 0, 5, -5, 0, 5, 5, 0, -5, -5, 0, 5, -5, 0, -5, 5, 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0jfar"]
 albedo_color = Color(0.219608, 0.435294, 0.458824, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_nbh0y"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tofkq"]
+albedo_color = Color(0.141176, 1, 1, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_mrf05"]
 
 [node name="Node3D" type="Node3D"]
 
@@ -100,3 +107,24 @@ interaction_type = 1
 
 [node name="InteractionZone2" parent="." instance=ExtResource("2_gp7im")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.02829, 0, -0.512918)
+
+[node name="Ship" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.56566, 0, -1.77127)
+
+[node name="ShipHull" type="MeshInstance3D" parent="Ship"]
+transform = Transform3D(2.675, 0, 0, 0, 5, 0, 0, 0, 2.675, 0, 4.67049, 0)
+mesh = SubResource("CapsuleMesh_nbh0y")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_tofkq")
+
+[node name="Fin1" type="MeshInstance3D" parent="Ship"]
+transform = Transform3D(1, 0, 0, 0, 2.0072, 0.224951, 0, -0.463399, 0.97437, 0, 1.54915, 1.41173)
+mesh = SubResource("CapsuleMesh_mrf05")
+
+[node name="Fin2" type="MeshInstance3D" parent="Ship"]
+transform = Transform3D(0.395177, 0.344849, 0.903223, 0, 2.02551, -0.182236, -0.918605, 0.148351, 0.38856, -1.17224, 1.54915, -0.23703)
+mesh = SubResource("CapsuleMesh_mrf05")
+
+[node name="Fin3" type="MeshInstance3D" parent="Ship"]
+transform = Transform3D(-0.699663, -0.141067, 0.711183, 0, 2.05052, 0.0958458, -0.714473, 0.138143, -0.696442, 1.12251, 1.54915, -0.606401)
+mesh = SubResource("CapsuleMesh_mrf05")
