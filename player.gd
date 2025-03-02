@@ -4,7 +4,7 @@ extends CharacterBody3D
 @export var pikmin_scene: PackedScene  # Drag and drop Pikmin.tscn in the inspector
 @onready var _target_point: Node3D = %TargetPoint  # The point Pikmin will follow
 @onready var _pikmin_container: Node3D = $PikminContainer  # Empty Node3D for organization
-@onready var _debug_spawn: Node3D = $DebugSpawnPoint
+@onready var _debug_spawn: Node3D = $PlayerSkin/DebugSpawnPoint
 
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
@@ -190,11 +190,11 @@ func set_interaction_zone(zone):
 	current_interaction_zone = zone
 	
 func spawn_pikmin():
-	Log.print("Making a pikmin...")
 	if pikmin_scene:
 		var pikmin = pikmin_scene.instantiate()  # Create a new Pikmin instance
 		_pikmin_container.add_child(pikmin)  # Parent it under a container node
-		pikmin.global_transform.origin = _debug_spawn.position  # Spawn near the player
+		pikmin.global_transform.origin = _debug_spawn.global_transform.origin
+		Log.print("Making a pikmin at " + str(_debug_spawn.global_transform.origin))
 		pikmin._target = _target_point  # Assign the player's TargetPoint as its goal
 
 func _unhandled_input(event: InputEvent) -> void:
