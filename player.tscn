@@ -12,6 +12,7 @@ points = PackedVector3Array(-0.125207, -0.532801, -0.480507, 0.0227831, 0.47607,
 [sub_resource type="SphereShape3D" id="SphereShape3D_jouno"]
 
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_layer = 3
 script = ExtResource("1_0nf4c")
 
@@ -23,6 +24,10 @@ mesh = SubResource("CapsuleMesh_tl7iq")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.205753, -0.618532)
 mesh = SubResource("PrismMesh_xy4hc")
 skeleton = NodePath("../..")
+
+[node name="TargetPoint" type="Node3D" parent="PlayerSkin"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 1.42056)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("ConvexPolygonShape3D_wq2mh")
@@ -38,3 +43,9 @@ spring_length = 4.0
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot/CameraSpringArm"]
 unique_name_in_owner = true
+
+[node name="PikminContainer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="DebugSpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 5.01381)

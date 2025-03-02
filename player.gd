@@ -1,5 +1,10 @@
 extends CharacterBody3D
-# laptop commit test
+
+# temp test stuff for spawning pikmin at will
+@export var pikmin_scene: PackedScene  # Drag and drop Pikmin.tscn in the inspector
+@onready var _target_point: Node3D = %TargetPoint  # The point Pikmin will follow
+@onready var _pikmin_container: Node3D = $PikminContainer  # Empty Node3D for organization
+@onready var _debug_spawn: Node3D = $DebugSpawnPoint
 
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
@@ -154,6 +159,9 @@ func _physics_process(delta: float) -> void:
 			current_interaction_zone.interact()
 		else:
 			Log.print("No interaction available.")
+			
+	if Input.is_action_just_pressed("spawn_pikmin"):
+		spawn_pikmin()
 	
 # toggle between over the shoulder and bird's eye view
 func toggle_camera_angle():
@@ -180,6 +188,14 @@ func toggle_camera_zoom():
 		
 func set_interaction_zone(zone):
 	current_interaction_zone = zone
+	
+func spawn_pikmin():
+	Log.print("Making a pikmin...")
+	if pikmin_scene:
+		var pikmin = pikmin_scene.instantiate()  # Create a new Pikmin instance
+		_pikmin_container.add_child(pikmin)  # Parent it under a container node
+		pikmin.global_transform.origin = _debug_spawn.position  # Spawn near the player
+		pikmin._target = _target_point  # Assign the player's TargetPoint as its goal
 
 func _unhandled_input(event: InputEvent) -> void:
 	pass

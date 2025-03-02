@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=16 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://player.tscn" id="1_4o623"]
 [ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://interaction_zone.tscn" id="2_gp7im"]
+[ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://pikmin.tscn" id="3_t25sh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l1rx6"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -16,15 +17,6 @@ sky = SubResource("Sky_ycq45")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_voq8s"]
-size = Vector2(10, 10)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ct3t4"]
-albedo_color = Color(0.141176, 0.752941, 0.196078, 1)
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_4r6u1"]
-data = PackedVector3Array(5, 0, 5, -5, 0, 5, 5, 0, -5, -5, 0, 5, -5, 0, -5, 5, 0, -5)
-
 [sub_resource type="PrismMesh" id="PrismMesh_0u8ln"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0jfar"]
@@ -37,6 +29,19 @@ albedo_color = Color(0.141176, 1, 1, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mrf05"]
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_s4xlx"]
+vertices = PackedVector3Array(-212.975, 0.5, -212.975, -212.975, 0.5, 213.025, 213.025, 0.5, 213.025, 213.025, 0.5, -212.975)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_voq8s"]
+size = Vector2(10, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ct3t4"]
+albedo_color = Color(0.141176, 0.752941, 0.196078, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_4r6u1"]
+data = PackedVector3Array(5, 0, 5, -5, 0, 5, 5, 0, -5, -5, 0, 5, -5, 0, -5, 5, 0, -5)
+
 [node name="Node3D" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -46,19 +51,10 @@ environment = SubResource("Environment_ahutk")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Floor" type="MeshInstance3D" parent="."]
-transform = Transform3D(42.695, 0, 0, 0, 42.695, 0, 0, 0, 42.695, 0, 0, 0)
-mesh = SubResource("PlaneMesh_voq8s")
-surface_material_override/0 = SubResource("StandardMaterial3D_ct3t4")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Floor"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_4r6u1")
-
 [node name="Player" parent="." instance=ExtResource("1_4o623")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.918456, -2)
 top_level = true
+pikmin_scene = ExtResource("3_t25sh")
 
 [node name="Plants" type="Node" parent="."]
 
@@ -128,3 +124,20 @@ mesh = SubResource("CapsuleMesh_mrf05")
 [node name="Fin3" type="MeshInstance3D" parent="Ship"]
 transform = Transform3D(-0.699663, -0.141067, 0.711183, 0, 2.05052, 0.0958458, -0.714473, 0.138143, -0.696442, 1.12251, 1.54915, -0.606401)
 mesh = SubResource("CapsuleMesh_mrf05")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_s4xlx")
+
+[node name="Floor" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(42.695, 0, 0, 0, 42.695, 0, 0, 0, 42.695, 0, 0, 0)
+mesh = SubResource("PlaneMesh_voq8s")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_ct3t4")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Floor/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_4r6u1")
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("3_t25sh")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -12.3546)
