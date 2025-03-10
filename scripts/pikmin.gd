@@ -1,12 +1,17 @@
 # Pikmin Code
 extends CharacterBody3D
 
+var gravity = 9.8
+var throw_upward_speed = 10
+var throw_forward_speed = 10
+
 # Pikmin states
 enum State {
 	FOLLOWING,
 	WAITING,
 	IDLE,
-	GATHERING
+	GATHERING,
+	THROWN
 }
 
 # Public references
@@ -50,16 +55,24 @@ func _process(delta: float) -> void:
 			idle_state(delta)
 		State.GATHERING:
 			gathering_state(delta)
+		State.THROWN:
+			thrown_state_update(delta)
 		
 func _physics_process(delta):
+	# If Pikmin is in THROWN state, handle ballistic arc and skip navigation
+	if current_state == State.THROWN:
+		thrown_state_update(delta)
+		return  # <--- stop here, so we don't run the navigation code at all
+
+	# Otherwise, do the normal pathfinding movement
 	if _navigation_agent.is_navigation_finished():
-		return  # Stop if at the destination
+		return
 
 	var next_position = _navigation_agent.get_next_path_position()
 	var direction = (next_position - global_transform.origin).normalized()
-
 	velocity = direction * SPEED
 	move_and_slide()
+
 
 # FOLLOWING state: Pikmin moves toward the target
 # old version that targetted a single point
@@ -76,6 +89,7 @@ func _physics_process(delta):
 		#_navigation_agent.set_target_position(target_position)
 		#
 		#_last_target_position = _target.global_transform.origin
+
 # WAITING state: Pikmin waits, can implement more advanced logic like idle animations here
 func waiting_state(delta: float) -> void:
 	pass  # Placeholder for any behavior when Pikmin are in the waiting state.
@@ -87,6 +101,37 @@ func idle_state(delta: float) -> void:
 # GATHERING state: Pikmin interacts with nearby objects (could be implemented later)
 func gathering_state(delta: float) -> void:
 	pass  # Placeholder for any behavior when Pikmin are gathering.
+
+
+func start_throw(origin_transform: Transform3D):
+	# Optionally set the Pikmin’s position or orientation if needed
+	# e.g. set global_transform = origin_transform
+
+	# Switch to THROWN state
+	current_state = State.THROWN
+
+	# Apply an initial velocity or impulse
+	# For a simple forward arc:
+	velocity = Vector3(0, throw_upward_speed, throw_forward_speed)
+	# Or maybe use some direction from the player’s facing
+	# var direction = (player.global_transform.basis.z).normalized()
+	# velocity = direction * throw_forward_speed
+	# velocity.y = throw_upward_speed
+
+	# If you have a special animation for throwing, start it here
+
+
+func thrown_state_update(delta: float):
+	velocity.y -= (gravity * delta)
+	move_and_slide()
+
+	# If we detect a collision or the Pikmin is on the ground again:
+	if is_on_floor():
+		# Transition back to WAITING or FOLLOWING, or do something else
+		current_state = State.WAITING
+		velocity = Vector3.ZERO
+
+
 
 func assign_new_target_position():
 	if player:

@@ -73,6 +73,7 @@ func _input(event: InputEvent) -> void:
 func _process(delta):
 	move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
 	move_input.z = Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
+	throw()
 	
 func _physics_process(delta: float) -> void:
 	camera_logic(delta)
@@ -185,6 +186,22 @@ func interact_call():
 		else:
 			Log.print("No interaction available.")
 			
+
+func throw():
+	if Input.is_action_just_pressed("left_click"):
+		throw_pikmin()
+
+func throw_pikmin():
+	# Find the first Pikmin in _pikmin_container that is in FOLLOWING state
+	for pikmin in _pikmin_container.get_children():
+		if pikmin.current_state == pikmin.State.FOLLOWING:
+			# Call a function on the Pikmin to handle the throw
+			pikmin.start_throw(self.global_transform)  # or pass direction info
+			break
+
+
+
+	
 func camera_logic(delta):
 	# camera inputs
 	if Input.is_action_just_pressed("camera_angle"):
@@ -229,6 +246,7 @@ func camera_logic(delta):
 
 		eased_speed = max(eased_speed, min_speed)  # Ensure minimum speed
 		_camera_pivot.rotation.x += sign(angle_diff) * min(absf(angle_diff), delta * eased_speed)
+
 
 
 #func is_on_floor():    
