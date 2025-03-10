@@ -56,11 +56,10 @@ var move_input = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	
-	# default zoom is middle, default angle is over shoulder
 	_camera_spring.spring_length = zoom_middle
 	_camera_pivot.rotation.x = angle_over_shoulder
+	_camera_input_direction = Vector2.ZERO
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	if not _idle_pikmin_container:
 		Log.print("no idle container set")
@@ -75,12 +74,69 @@ func _process(delta):
 	move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
 	move_input.z = Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	# camera shit
-	#_camera_pivot.rotation.y -= _camera_input_direction.x * delta
-	_camera_input_direction = Vector2.ZERO
+	camera_logic(delta)
+	player_movement(delta)
+	interact_call()
+	dismiss_pikmin()
+	dev_spawn_pikmin()
+	mouse_cursor_visible()
+
 	
+# toggle between over the shoulder and bird's eye view
+func toggle_camera_angle():
+	if _current_angle_enum == CameraAngles.birds_eye:
+		camera_angle_target = angle_over_shoulder
+		_current_angle_enum = CameraAngles.over_shoulder
+		Log.print("Camera Angle over shoulder")
+	elif _current_angle_enum == CameraAngles.over_shoulder:
+		camera_angle_target = angle_birds_eye
+		_current_angle_enum = CameraAngles.birds_eye
+		Log.print("Camera Angle birds eye")
+	
+# toggle between three zoom levels
+func toggle_camera_zoom():
+	if camera_zoom_target == zoom_middle:
+		camera_zoom_target = zoom_far
+		Log.print("Camera Zoom Far")
+	elif camera_zoom_target == zoom_far:
+		camera_zoom_target = zoom_close
+		Log.print("Camera Zoom Close")
+	elif camera_zoom_target == zoom_close:
+		camera_zoom_target = zoom_middle
+		Log.print("Camera Zoom Middle")
+		
+func set_interaction_zone(zone):
+	current_interaction_zone = zone
+
+func dismiss_squad():
+	Log.print("dismiss called")
+	for pikmin in _pikmin_container.get_children():
+		if pikmin.is_in_group("pikmin"):
+			pikmin.current_state = pikmin.State.IDLE
+			pikmin.player = null  # Remove the reference to the player (no longer follows)
+			pikmin.reparent(_idle_pikmin_container)  # Move the Pikmin to the idle container
+			Log.print("pikmin should now be idle")
+	
+func spawn_pikmin():
+	if pikmin_scene:
+		var pikmin = pikmin_scene.instantiate()  # Create a new Pikmin instance
+		_pikmin_container.add_child(pikmin)  # Parent it under a container node
+		pikmin.global_transform.origin = _debug_spawn.global_transform.origin
+		Log.print("Making a pikmin at " + str(_debug_spawn.global_transform.origin))
+		
+		# Assign the player's target point and player reference
+		pikmin.player = _skin
+		#pikmin._target = _target_point
+		pikmin.gathering_zone_size = Vector2(%ArmyArea.scale.x, %ArmyArea.scale.z)
+
+func _unhandled_input(event: InputEvent) -> void:
+	pass
+	
+
+# Helpers: ========================
+
+func player_movement(delta):
 	var raw_input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	# global basis based on camera
 	var forward := _camera.global_basis.z
@@ -89,13 +145,10 @@ func _physics_process(delta: float) -> void:
 	var move_direction := forward * raw_input.y + right * raw_input.x
 	move_direction.y = 0.0
 	move_direction = move_direction.normalized()
-	
 	velocity = velocity.move_toward(move_direction * move_speed, acceleration * delta)
 	move_and_slide()
-	
 	if move_direction.length() > 0.2:
 		_last_movement_direction = move_direction
-		
 	# rotating skin and not player itself, might need to change
 	var target_angle := Vector3.FORWARD.signed_angle_to(_last_movement_direction, Vector3.UP)
 	_skin.global_rotation.y = lerp_angle(_skin.rotation.y, target_angle, rotation_speed * delta)
@@ -108,11 +161,31 @@ func _physics_process(delta: float) -> void:
 	else:
 		pass
 		# anim idle
-	
-	# get mouse back in order to close window (escape)	
+
+func dev_spawn_pikmin(): # dev use, press p to spawn pikmin
+	if Input.is_action_just_pressed("spawn_pikmin"):
+		spawn_pikmin()	
+
+func mouse_cursor_visible():	# get mouse back in order to close window (escape)	
 	if Input.is_action_just_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	
+
+func dismiss_pikmin():
+	# dismiss (x press, or y) on controller
+	# Added X on keyboard
+	if Input.is_action_just_pressed("dismiss"):
+		dismiss_squad()		
+
+func interact_call():
+	# interaction (A press)
+	if Input.is_action_just_pressed("interact"):
+		if current_interaction_zone:
+			# Call a function on the zone to handle interaction
+			current_interaction_zone.interact()
+		else:
+			Log.print("No interaction available.")
+			
+func camera_logic(delta):
 	# camera inputs
 	if Input.is_action_just_pressed("camera_angle"):
 		toggle_camera_angle()
@@ -156,72 +229,7 @@ func _physics_process(delta: float) -> void:
 
 		eased_speed = max(eased_speed, min_speed)  # Ensure minimum speed
 		_camera_pivot.rotation.x += sign(angle_diff) * min(absf(angle_diff), delta * eased_speed)
-		
-	# interaction (A press)
-	if Input.is_action_just_pressed("interact"):
-		if current_interaction_zone:
-			# Call a function on the zone to handle interaction
-			current_interaction_zone.interact()
-		else:
-			Log.print("No interaction available.")
-	
-	# dismiss (x press, or y)
-	if Input.is_action_just_pressed("dismiss"):
-		dismiss_squad()
-	
-	# dev use, press p to pikmin
-	if Input.is_action_just_pressed("spawn_pikmin"):
-		spawn_pikmin()
-	
-# toggle between over the shoulder and bird's eye view
-func toggle_camera_angle():
-	if _current_angle_enum == CameraAngles.birds_eye:
-		camera_angle_target = angle_over_shoulder
-		_current_angle_enum = CameraAngles.over_shoulder
-		Log.print("Camera Angle over shoulder")
-	elif _current_angle_enum == CameraAngles.over_shoulder:
-		camera_angle_target = angle_birds_eye
-		_current_angle_enum = CameraAngles.birds_eye
-		Log.print("Camera Angle birds eye")
-	
-# toggle between three zoom levels
-func toggle_camera_zoom():
-	if camera_zoom_target == zoom_middle:
-		camera_zoom_target = zoom_far
-		Log.print("Camera Zoom Far")
-	elif camera_zoom_target == zoom_far:
-		camera_zoom_target = zoom_close
-		Log.print("Camera Zoom Close")
-	elif camera_zoom_target == zoom_close:
-		camera_zoom_target = zoom_middle
-		Log.print("Camera Zoom Middle")
-		
-func set_interaction_zone(zone):
-	current_interaction_zone = zone
-	
-func dismiss_squad():
-	Log.print("dismiss called")
-	for pikmin in _pikmin_container.get_children():
-		if pikmin.is_in_group("pikmin"):
-			pikmin.current_state = pikmin.State.IDLE
-			pikmin.player = null  # Remove the reference to the player (no longer follows)
-			pikmin.reparent(_idle_pikmin_container)  # Move the Pikmin to the idle container
-			Log.print("pikmin should now be idle")
-	
-func spawn_pikmin():
-	if pikmin_scene:
-		var pikmin = pikmin_scene.instantiate()  # Create a new Pikmin instance
-		_pikmin_container.add_child(pikmin)  # Parent it under a container node
-		pikmin.global_transform.origin = _debug_spawn.global_transform.origin
-		Log.print("Making a pikmin at " + str(_debug_spawn.global_transform.origin))
-		
-		# Assign the player's target point and player reference
-		pikmin.player = _skin
-		#pikmin._target = _target_point
-		pikmin.gathering_zone_size = Vector2(%ArmyArea.scale.x, %ArmyArea.scale.z)
 
-func _unhandled_input(event: InputEvent) -> void:
-	pass
 
 #func is_on_floor():    
 	##test_move returns true if the movement provided would cause a collision, but does not move anything

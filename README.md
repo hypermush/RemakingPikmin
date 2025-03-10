@@ -62,3 +62,7 @@ Run the main scene (whichever is designated as the startup scene, typically Main
 * Right Trigger: Zoom in/out
 * A: Interact
 * X/Y: Dismiss Pikmin
+
+### Contributing
+* Pull Requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+* Feedback / Bug Reports: Feel free to create issues for anything you encounter.
