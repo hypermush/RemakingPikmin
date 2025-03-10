@@ -5,6 +5,7 @@ extends CharacterBody3D
 @onready var _target_point: Node3D = %TargetPoint  # The point Pikmin will follow
 @onready var _pikmin_container: Node3D = $PikminContainer  # Empty Node3D for organization
 @onready var _debug_spawn: Node3D = $PlayerSkin/DebugSpawnPoint
+@export var _idle_pikmin_container: Node3D
 
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
@@ -59,6 +60,9 @@ func _ready() -> void:
 	# default zoom is middle, default angle is over shoulder
 	_camera_spring.spring_length = zoom_middle
 	_camera_pivot.rotation.x = angle_over_shoulder
+	
+	if not _idle_pikmin_container:
+		Log.print("no idle container set")
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("left_click"):
@@ -159,7 +163,12 @@ func _physics_process(delta: float) -> void:
 			current_interaction_zone.interact()
 		else:
 			Log.print("No interaction available.")
-			
+	
+	# dismiss (x press, or y)
+	if Input.is_action_just_pressed("dismiss"):
+		dismiss_squad()
+	
+	# dev use, press p to pikmin
 	if Input.is_action_just_pressed("spawn_pikmin"):
 		spawn_pikmin()
 	
@@ -189,13 +198,26 @@ func toggle_camera_zoom():
 func set_interaction_zone(zone):
 	current_interaction_zone = zone
 	
+func dismiss_squad():
+	Log.print("dismiss called")
+	for pikmin in _pikmin_container.get_children():
+		if pikmin.is_in_group("pikmin"):
+			pikmin.current_state = pikmin.State.IDLE
+			pikmin.player = null  # Remove the reference to the player (no longer follows)
+			pikmin.reparent(_idle_pikmin_container)  # Move the Pikmin to the idle container
+			Log.print("pikmin should now be idle")
+	
 func spawn_pikmin():
 	if pikmin_scene:
 		var pikmin = pikmin_scene.instantiate()  # Create a new Pikmin instance
 		_pikmin_container.add_child(pikmin)  # Parent it under a container node
 		pikmin.global_transform.origin = _debug_spawn.global_transform.origin
 		Log.print("Making a pikmin at " + str(_debug_spawn.global_transform.origin))
-		pikmin._target = _target_point  # Assign the player's TargetPoint as its goal
+		
+		# Assign the player's target point and player reference
+		pikmin.player = _skin
+		#pikmin._target = _target_point
+		pikmin.gathering_zone_size = Vector2(%ArmyArea.scale.x, %ArmyArea.scale.z)
 
 func _unhandled_input(event: InputEvent) -> void:
 	pass

@@ -30,8 +30,9 @@ albedo_color = Color(0.141176, 1, 1, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mrf05"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_s4xlx"]
-vertices = PackedVector3Array(-212.975, 0.5, -212.975, -212.975, 0.5, 213.025, 213.025, 0.5, 213.025, 213.025, 0.5, -212.975)
+vertices = PackedVector3Array(-212.975, 0.02, -212.975, -212.975, 0.02, 213.025, 213.025, 0.02, 213.025, 213.025, 0.02, -212.975)
 polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+cell_height = 0.01
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_voq8s"]
 size = Vector2(10, 10)
@@ -51,10 +52,11 @@ environment = SubResource("Environment_ahutk")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Player" parent="." instance=ExtResource("1_4o623")]
+[node name="Player" parent="." node_paths=PackedStringArray("_idle_pikmin_container") instance=ExtResource("1_4o623")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.918456, -2)
 top_level = true
 pikmin_scene = ExtResource("3_t25sh")
+_idle_pikmin_container = NodePath("../IdlePikminContainer")
 
 [node name="Plants" type="Node" parent="."]
 
@@ -139,5 +141,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ct3t4")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Floor/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_4r6u1")
 
-[node name="CharacterBody3D" parent="." instance=ExtResource("3_t25sh")]
+[node name="DevPikmin" parent="." instance=ExtResource("3_t25sh")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -12.3546)
+
+[node name="IdlePikminContainer" type="Node3D" parent="."]
