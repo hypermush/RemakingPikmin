@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="RemakingPikmin"
-run/main_scene="res://level.tscn"
+run/main_scene="res://scenes/level.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Log="*res://Log.gd"
+Log="*res://scripts/Log.gd"
 
 [display]
 

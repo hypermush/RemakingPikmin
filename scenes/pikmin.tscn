@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://dyk5qsdux6adt"]
+
+[ext_resource type="Script" path="res://scripts/pikmin.gd" id="1_80hys"]
+[ext_resource type="PackedScene" uid="uid://b4xucxw6wooxl" path="res://assets/models/red_pikmin/scene.gltf" id="3_uauue"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s5qit"]
+radius = 0.494446
+
+[node name="Pikmin" type="CharacterBody3D" groups=["pikmin"]]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+script = ExtResource("1_80hys")
+
+[node name="Sketchfab_Scene" parent="." instance=ExtResource("3_uauue")]
+transform = Transform3D(-40.655, 0, -3.55417e-06, 0, 40.655, 0, 3.55417e-06, 0, -40.655, 0, 0.677827, -0.0714)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_s5qit")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+avoidance_enabled = true
