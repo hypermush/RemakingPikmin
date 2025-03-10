@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://4aisqcd1vdnj"]
+[gd_scene load_steps=5 format=3 uid="uid://4aisqcd1vdnj"]
 
 [ext_resource type="Texture2D" uid="uid://bb0whbhnby2tv" path="res://assets/images/backgrounds/splash.webp" id="1_yl0i8"]
+[ext_resource type="FontFile" uid="uid://ch04lg81ktlwc" path="res://assets/fonts/softizen/Softizen.ttf" id="2_ec1wa"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_peebb"]
 texture = ExtResource("1_yl0i8")
@@ -87,6 +88,7 @@ theme_override_colors/font_color = Color(1, 0.914063, 0, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_outline_size = 16
+theme_override_fonts/font = ExtResource("2_ec1wa")
 theme_override_font_sizes/font_size = 64
 text = "Open Source Pikmin"
 horizontal_alignment = 1
