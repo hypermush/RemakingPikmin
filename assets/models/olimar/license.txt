@@ -1,0 +1,11 @@
+Model Information:
+* title:	Olimar
+* source:	https://sketchfab.com/3d-models/olimar-581a1b887ac64d3d932bfd0de9103e21
+* author:	ThatNintendoFan (https://sketchfab.com/ThatNintendoFan)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Olimar" (https://sketchfab.com/3d-models/olimar-581a1b887ac64d3d932bfd0de9103e21) by ThatNintendoFan (https://sketchfab.com/ThatNintendoFan) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

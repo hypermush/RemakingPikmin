@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://jqnyg6i7slnu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnfds"]
+albedo_color = Color(1, 0, 0.954765, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_ghpuf"]
+material = SubResource("StandardMaterial3D_bnfds")
+outer_radius = 0.25
+rings = 16
+ring_segments = 3
+
+[node name="NewReticle" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_ghpuf")

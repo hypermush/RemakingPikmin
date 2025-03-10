@@ -1,0 +1,11 @@
+Model Information:
+* title:	Captain Olimar
+* source:	https://sketchfab.com/3d-models/captain-olimar-53605cfb06e44104b1ca30aae9db9358
+* author:	CuaxiloaSP (https://sketchfab.com/hectorcuaxiloaSP)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Captain Olimar" (https://sketchfab.com/3d-models/captain-olimar-53605cfb06e44104b1ca30aae9db9358) by CuaxiloaSP (https://sketchfab.com/hectorcuaxiloaSP) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
