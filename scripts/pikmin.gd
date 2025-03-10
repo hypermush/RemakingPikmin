@@ -104,21 +104,15 @@ func gathering_state(delta: float) -> void:
 
 
 func start_throw(origin_transform: Transform3D):
-	# Optionally set the Pikmin’s position or orientation if needed
-	# e.g. set global_transform = origin_transform
+	current_state = State.THROWN  # <--- CRITICAL
 
-	# Switch to THROWN state
-	current_state = State.THROWN
+	var direction = player.global_transform.basis.z
+	direction.y = 0.0
+	direction = direction.normalized()
 
-	# Apply an initial velocity or impulse
-	# For a simple forward arc:
-	velocity = Vector3(0, throw_upward_speed, throw_forward_speed)
-	# Or maybe use some direction from the player’s facing
-	# var direction = (player.global_transform.basis.z).normalized()
-	# velocity = direction * throw_forward_speed
-	# velocity.y = throw_upward_speed
+	velocity = -direction * throw_forward_speed
+	velocity.y = throw_upward_speed
 
-	# If you have a special animation for throwing, start it here
 
 
 func thrown_state_update(delta: float):
