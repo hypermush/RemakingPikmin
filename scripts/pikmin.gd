@@ -103,15 +103,31 @@ func gathering_state(delta: float) -> void:
 	pass  # Placeholder for any behavior when Pikmin are gathering.
 
 
-func start_throw(origin_transform: Transform3D):
+func start_throw(origin_transform: Transform3D, direction: Vector3, reticle_distance: float):
 	current_state = State.THROWN  # <--- CRITICAL
 
-	var direction = player.global_transform.basis.z
-	direction.y = 0.0
-	direction = direction.normalized()
+	# Get the target position (reticle's position)
+	var target_position = origin_transform.origin + direction * reticle_distance
 
-	velocity = -direction * throw_forward_speed
-	velocity.y = throw_upward_speed
+	# Calculate the horizontal distance to the target
+	var horizontal_distance = Vector2(target_position.x - global_transform.origin.x, target_position.z - global_transform.origin.z).length()
+
+	# Calculate the vertical distance to the target
+	var vertical_distance = target_position.y - global_transform.origin.y
+
+	# Calculate the required initial velocity using kinematic equations
+	var gravity = 9.8  # Adjust this based on your game's gravity
+	var angle = 45.0 * (PI / 180)  # 45 degrees for a balanced arc (you can adjust this)
+	var initial_speed = sqrt((gravity * horizontal_distance * horizontal_distance) / (2 * (horizontal_distance * tan(angle) - vertical_distance) * cos(angle) * cos(angle)))
+
+	# Calculate the horizontal and vertical components of the velocity
+	var horizontal_velocity = initial_speed * cos(angle)
+	var vertical_velocity = initial_speed * sin(angle)
+
+	# Apply the velocity in the direction of the reticle
+	var throw_direction = Vector3(target_position.x - global_transform.origin.x, 0, target_position.z - global_transform.origin.z).normalized()
+	velocity = throw_direction * horizontal_velocity
+	velocity.y = vertical_velocity
 
 
 
@@ -141,4 +157,4 @@ func assign_new_target_position():
 		# Ensure we have a minimum threshold for position updates
 		if global_transform.origin.distance_to(target_position) > reposition_threshold:
 			_navigation_agent.set_target_position(target_position)
-			Log.print("New target position assigned: " + str(target_position))
+			#Log.print("New target position assigned: " + str(target_position))

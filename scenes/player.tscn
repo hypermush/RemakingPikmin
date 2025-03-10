@@ -1,10 +1,8 @@
 [gd_scene load_steps=10 format=3 uid="uid://x0f6skrphdbu"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_0nf4c"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_tl7iq"]
-
-[sub_resource type="PrismMesh" id="PrismMesh_xy4hc"]
+[ext_resource type="PackedScene" uid="uid://pbrgnkxxnb4d" path="res://assets/models/captain_olimar/scene.gltf" id="2_7mkht"]
+[ext_resource type="PackedScene" uid="uid://jqnyg6i7slnu" path="res://scenes/new_reticle.tscn" id="2_fcx2p"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vl6tg"]
 albedo_color = Color(1, 0, 0, 1)
@@ -32,12 +30,9 @@ script = ExtResource("1_0nf4c")
 
 [node name="PlayerSkin" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
-mesh = SubResource("CapsuleMesh_tl7iq")
 
-[node name="FacingPointer" type="MeshInstance3D" parent="PlayerSkin"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.205753, -0.618532)
-mesh = SubResource("PrismMesh_xy4hc")
-skeleton = NodePath("../..")
+[node name="Sketchfab_Scene" parent="PlayerSkin" instance=ExtResource("2_7mkht")]
+transform = Transform3D(-0.349963, 0, -0.00510054, 0, 0.35, 0, 0.00510054, 0, -0.349963, -0.0305029, 0.559998, 0.0207552)
 
 [node name="TargetPoint" type="Node3D" parent="PlayerSkin"]
 unique_name_in_owner = true
@@ -75,3 +70,6 @@ unique_name_in_owner = true
 [node name="PikminContainer" type="Node3D" parent="."]
 
 [node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="."]
+
+[node name="Reticle" parent="." instance=ExtResource("2_fcx2p")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.878482, -1.88311)

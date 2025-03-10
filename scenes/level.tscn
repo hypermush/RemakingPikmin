@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=17 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
 [ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://scenes/interaction_zone.tscn" id="3_o5ufs"]
+[ext_resource type="PackedScene" uid="uid://jqnyg6i7slnu" path="res://scenes/new_reticle.tscn" id="4_jrn0e"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l1rx6"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -145,3 +146,6 @@ shape = SubResource("ConcavePolygonShape3D_4r6u1")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -12.3546)
 
 [node name="IdlePikminContainer" type="Node3D" parent="."]
+
+[node name="NewReticle" parent="." instance=ExtResource("4_jrn0e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55236, -5.95044)

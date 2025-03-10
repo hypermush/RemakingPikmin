@@ -1,6 +1,8 @@
 # Player Code:
 extends CharacterBody3D
 
+
+
 # temp test stuff for spawning pikmin at will
 @export var pikmin_scene: PackedScene  # Drag and drop Pikmin.tscn in the inspector
 @onready var _target_point: Node3D = %TargetPoint  # The point Pikmin will follow
@@ -59,22 +61,21 @@ func _ready() -> void:
 	_camera_spring.spring_length = zoom_middle
 	_camera_pivot.rotation.x = angle_over_shoulder
 	_camera_input_direction = Vector2.ZERO
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)  # <-- Change this line
 	
 	if not _idle_pikmin_container:
 		Log.print("no idle container set")
 	
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("left_click"):
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	if event.is_action_pressed("ui_cancel"):
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func _process(delta):
 	move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
 	move_input.z = Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
 	throw()
+	update_reticle_position()
 	
+@onready var reticle: Node3D = $Reticle 
+@export var reticle_distance: float = 10.0  # Default distance for the reticle
+
 func _physics_process(delta: float) -> void:
 	camera_logic(delta)
 	player_movement(delta)
@@ -82,7 +83,6 @@ func _physics_process(delta: float) -> void:
 	dismiss_pikmin()
 	dev_spawn_pikmin()
 	mouse_cursor_visible()
-
 	
 # toggle between over the shoulder and bird's eye view
 func toggle_camera_angle():
@@ -124,7 +124,7 @@ func spawn_pikmin():
 		var pikmin = pikmin_scene.instantiate()  # Create a new Pikmin instance
 		_pikmin_container.add_child(pikmin)  # Parent it under a container node
 		pikmin.global_transform.origin = _debug_spawn.global_transform.origin
-		Log.print("Making a pikmin at " + str(_debug_spawn.global_transform.origin))
+		#Log.print("Making a pikmin at " + str(_debug_spawn.global_transform.origin))
 		
 		# Assign the player's target point and player reference
 		pikmin.player = _skin
@@ -195,8 +195,10 @@ func throw_pikmin():
 	# Find the first Pikmin in _pikmin_container that is in FOLLOWING state
 	for pikmin in _pikmin_container.get_children():
 		if pikmin.current_state == pikmin.State.FOLLOWING:
+			# Calculate the direction to the reticle
+			var throw_direction = (reticle.global_transform.origin - self.global_transform.origin).normalized()
 			# Call a function on the Pikmin to handle the throw
-			pikmin.start_throw(self.global_transform)  # or pass direction info
+			pikmin.start_throw(self.global_transform, throw_direction, reticle_distance)
 			break
 
 
@@ -213,8 +215,6 @@ func camera_logic(delta):
 	if Input.is_action_just_pressed("camera_zoom"):
 		toggle_camera_zoom()
 		
-	# check if camera needs to move
-	# camera back
 	if update_camera_rotation:
 		var angle_diff = fposmod(camera_rotation_target - _camera_pivot.rotation.y + PI, TAU) - PI  # Normalize to [-PI, PI]
 		
@@ -247,11 +247,29 @@ func camera_logic(delta):
 		eased_speed = max(eased_speed, min_speed)  # Ensure minimum speed
 		_camera_pivot.rotation.x += sign(angle_diff) * min(absf(angle_diff), delta * eased_speed)
 
+func update_reticle_position():
+	var camera = _camera
+	var viewport = get_viewport()
+	var mouse_position = viewport.get_mouse_position()
 
+	# Create a ray from the camera through the mouse position
+	var ray_origin = camera.project_ray_origin(mouse_position)
+	var ray_direction = camera.project_ray_normal(mouse_position)
+	var ray_length = 1000.0  # Adjust this based on your game's scale
 
-#func is_on_floor():    
-	##test_move returns true if the movement provided would cause a collision, but does not move anything
-	#if test_move(transform, Vector3.DOWN*0.0001 * get_physics_process_delta_time() ) == true:  
-		#return true  
-	#else:  
-		#return false 
+	# Create PhysicsRayQueryParameters3D
+	var ray_params = PhysicsRayQueryParameters3D.new()
+	ray_params.from = ray_origin
+	ray_params.to = ray_origin + ray_direction * ray_length
+	ray_params.collision_mask = 1  # Adjust collision mask as needed
+
+	# Perform the raycast
+	var space_state = get_world_3d().direct_space_state
+	var ray_result = space_state.intersect_ray(ray_params)
+
+	if ray_result:
+		# Place the reticle at the intersection point
+		reticle.global_transform.origin = ray_result.position
+	else:
+		# If no intersection, place the reticle at a default distance
+		reticle.global_transform.origin = ray_origin + ray_direction * reticle_distance
