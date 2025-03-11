@@ -10,10 +10,10 @@ enum InteractionType {
 }
 
 # UI nonsense
-@onready var _sub_viewport: SubViewport = %SubViewport  # Reference to the SubViewport
+#@onready var _sub_viewport: SubViewport = %SubViewport  # Reference to the SubViewport
 @onready var _uimesh: MeshInstance3D = %UIMesh
 
-@onready var _halo_mesh: MeshInstance3D = %ZoneHalo
+#@onready var _halo_mesh: MeshInstance3D = %ZoneHalo
 @onready var _interact_zone: Area3D = %Area3D
 
 @export var interaction_type: InteractionType = InteractionType.SHIP

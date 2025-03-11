@@ -1,10 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=16 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
 [ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://scenes/interaction_zone.tscn" id="3_o5ufs"]
 [ext_resource type="PackedScene" uid="uid://dtn0v6wjrvn3t" path="res://assets/models/the_s.s_dolphin/scene.gltf" id="4_h4sh7"]
-[ext_resource type="PackedScene" uid="uid://jqnyg6i7slnu" path="res://scenes/new_reticle.tscn" id="4_jrn0e"]
 [ext_resource type="Texture2D" uid="uid://biohqk7h84lxr" path="res://assets/textures/wood.png" id="5_2v2i6"]
 [ext_resource type="PackedScene" uid="uid://raf5vb8lntpx" path="res://scenes/melon.tscn" id="7_ol4pb"]
 
@@ -130,9 +129,6 @@ shape = SubResource("ConcavePolygonShape3D_4r6u1")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -12.3546)
 
 [node name="IdlePikminContainer" type="Node3D" parent="."]
-
-[node name="NewReticle" parent="." instance=ExtResource("4_jrn0e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55236, -5.95044)
 
 [node name="Melon" parent="." instance=ExtResource("7_ol4pb")]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1, 11.7945, -19.3381)
