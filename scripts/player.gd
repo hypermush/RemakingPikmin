@@ -175,6 +175,7 @@ func dismiss_pikmin():
 	# dismiss (x press, or y) on controller
 	# Added X on keyboard
 	if Input.is_action_just_pressed("dismiss"):
+		SoundEffects.play_sound("dismiss-whistle")
 		dismiss_squad()		
 
 func interact_call():

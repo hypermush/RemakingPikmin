@@ -3,6 +3,7 @@ extends Node
 # Singleton for sound effects
 @export var sound_map: Dictionary = {
 	# Example: "key": preload("res://path/to/sound.ogg")
+	"dismiss-whistle" : preload("res://assets/sfx/police-whistle-short.mp3")
 	#"jump": preload("res://sounds/jump.ogg"),
 	#"shoot": preload("res://sounds/shoot.ogg"),
 	#"explosion": preload("res://sounds/explosion.ogg")
