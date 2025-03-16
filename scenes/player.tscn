@@ -1,14 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://x0f6skrphdbu"]
+[gd_scene load_steps=8 format=3 uid="uid://x0f6skrphdbu"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_0nf4c"]
 [ext_resource type="PackedScene" uid="uid://pbrgnkxxnb4d" path="res://assets/models/captain_olimar/scene.gltf" id="2_7mkht"]
 [ext_resource type="PackedScene" uid="uid://jqnyg6i7slnu" path="res://scenes/new_reticle.tscn" id="2_fcx2p"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vl6tg"]
-albedo_color = Color(1, 0, 0, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_varp1"]
-material = SubResource("StandardMaterial3D_vl6tg")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_imodx"]
 transparency = 1
@@ -34,23 +28,18 @@ unique_name_in_owner = true
 [node name="Sketchfab_Scene" parent="PlayerSkin" instance=ExtResource("2_7mkht")]
 transform = Transform3D(-0.349963, 0, -0.00510054, 0, 0.35, 0, 0.00510054, 0, -0.349963, -0.0305029, 0.559998, 0.0207552)
 
-[node name="TargetPoint" type="Node3D" parent="PlayerSkin"]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 2.421)
-
-[node name="DevMesh" type="MeshInstance3D" parent="PlayerSkin/TargetPoint"]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
-cast_shadow = 0
-gi_mode = 0
-mesh = SubResource("SphereMesh_varp1")
-
 [node name="DebugSpawnPoint" type="Node3D" parent="PlayerSkin"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 5.01381)
 
 [node name="ArmyArea" type="MeshInstance3D" parent="PlayerSkin"]
 unique_name_in_owner = true
 transform = Transform3D(6.215, 0, 0, 0, 1, 0, 0, 0, 4.24, 0, -0.501, 3.53286)
+visible = false
 mesh = SubResource("BoxMesh_6lkux")
+
+[node name="FollowSource" type="Node3D" parent="PlayerSkin"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 2)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("ConvexPolygonShape3D_wq2mh")

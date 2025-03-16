@@ -1,9 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=18 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
 [ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://scenes/interaction_zone.tscn" id="3_o5ufs"]
 [ext_resource type="Texture2D" uid="uid://fdjhd156jl8n" path="res://assets/textures/stone-1024.jpg" id="3_q4mh4"]
+[ext_resource type="PackedScene" uid="uid://c5kgw5m1gsrvt" path="res://scenes/follow_point.tscn" id="3_wc42g"]
 [ext_resource type="PackedScene" uid="uid://dtn0v6wjrvn3t" path="res://assets/models/the_s.s_dolphin/scene.gltf" id="4_h4sh7"]
 [ext_resource type="Texture2D" uid="uid://b7v8pag6jm2qx" path="res://assets/textures/tileable-s7002876-dark.png" id="6_mnfry"]
 [ext_resource type="PackedScene" uid="uid://raf5vb8lntpx" path="res://scenes/melon.tscn" id="7_ol4pb"]
@@ -57,6 +58,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.918456, -2)
 top_level = true
 pikmin_scene = ExtResource("2_l3mf0")
 _idle_pikmin_container = NodePath("../IdlePikminContainer")
+follow_point = ExtResource("3_wc42g")
 
 [node name="Plants" type="Node" parent="."]
 
@@ -128,6 +130,7 @@ shape = SubResource("ConcavePolygonShape3D_4r6u1")
 
 [node name="DevPikmin" parent="." instance=ExtResource("2_l3mf0")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -12.3546)
+current_state = 2
 
 [node name="IdlePikminContainer" type="Node3D" parent="."]
 

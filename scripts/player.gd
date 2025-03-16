@@ -6,9 +6,13 @@ extends CharacterBody3D
 # temp test stuff for spawning pikmin at will
 @export var pikmin_scene: PackedScene  # Drag and drop Pikmin.tscn in the inspector
 @onready var _target_point: Node3D = %TargetPoint  # The point Pikmin will follow
-@onready var _pikmin_container: Node3D = $PikminContainer  # Empty Node3D for organization
+#@onready var _pikmin_container: Node3D = $PikminContainer  # Empty Node3D for organization
+var _pikmin_list: Array = [] # List to track Pikmin
 @onready var _debug_spawn: Node3D = $PlayerSkin/DebugSpawnPoint
 @export var _idle_pikmin_container: Node3D
+@onready var _follow_count := 0
+@export var follow_point: PackedScene # set in inspector
+@onready var follow_source: Node3D = %FollowSource
 
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
@@ -81,6 +85,7 @@ func _physics_process(delta: float) -> void:
 	player_movement(delta)
 	interact_call()
 	dismiss_pikmin()
+	whistle_pikmin()
 	dev_spawn_pikmin()
 	mouse_cursor_visible()
 	
@@ -112,25 +117,26 @@ func set_interaction_zone(zone):
 
 func dismiss_squad():
 	Log.print("dismiss called")
-	for pikmin in _pikmin_container.get_children():
+	for pikmin in _pikmin_list:
 		if pikmin.is_in_group("pikmin"):
 			pikmin.current_state = pikmin.State.IDLE
 			pikmin.player = null  # Remove the reference to the player (no longer follows)
-			pikmin.reparent(_idle_pikmin_container)  # Move the Pikmin to the idle container
+			_pikmin_list.erase(pikmin)
+			pikmin.queue_free()
 			Log.print("pikmin should now be idle")
 	
 func spawn_pikmin():
 	if pikmin_scene:
 		var pikmin = pikmin_scene.instantiate()  # Create a new Pikmin instance
-		_pikmin_container.add_child(pikmin)  # Parent it under a container node
+		get_parent().add_child(pikmin)  # Moves Pikmin to scene root, outside of player movement
+		_pikmin_list.append(pikmin)  # Parent it under a container node
 		pikmin.global_transform.origin = _debug_spawn.global_transform.origin
 		#Log.print("Making a pikmin at " + str(_debug_spawn.global_transform.origin))
 		
 		# Assign the player's target point and player reference
 		pikmin.player = _skin
-		#pikmin._target = _target_point
-		pikmin.gathering_zone_size = Vector2(%ArmyArea.scale.x, %ArmyArea.scale.z)
-
+		update_pikmin_follow_targets()
+		
 func _unhandled_input(event: InputEvent) -> void:
 	pass
 	
@@ -176,7 +182,37 @@ func dismiss_pikmin():
 	# Added X on keyboard
 	if Input.is_action_just_pressed("dismiss"):
 		SoundEffects.play_sound("dismiss-whistle")
-		dismiss_squad()		
+		dismiss_squad()
+		update_pikmin_follow_targets()
+		
+func whistle_pikmin():
+	# whistle, b on controller, c on keyboard
+	if Input.is_action_just_pressed("whistle"):
+		#Log.print("whistle")
+		# debugging squad shape mechanics
+		# generating follow grid
+		# pressing b will up the follow count
+		_follow_count += 1
+		Log.print("Follow Count is now:" + str(_follow_count))
+		# add follow point as child of follow source
+		var new_follow_point = follow_point.instantiate()
+		new_follow_point.name = "FollowPoint" + str(_follow_count)
+		new_follow_point.transform.origin = Vector3(0, 0, _follow_count * 1.0)
+		follow_source.add_child(new_follow_point)
+		
+func update_pikmin_follow_targets():
+	var follow_points = follow_source.get_children()
+	
+	Log.print("pikmin list count: " + str(_pikmin_list.size()))
+	Log.print("follow point count: " + str(follow_points.size()))
+	
+	if _pikmin_list.is_empty() or follow_points.is_empty():
+		Log.print("No Pikmin or follow points to assign!")
+		return
+		
+	for i in range(min(_pikmin_list.size(), follow_points.size())):
+		Log.print("Assigning Pikmin " + str(i) + " to follow point " + str(follow_points[i].name))
+		_pikmin_list[i].target_follow_point = follow_points[i]  # Assign reference
 
 func interact_call():
 	# interaction (A press)
@@ -194,7 +230,7 @@ func throw():
 
 func throw_pikmin():
 	# Find the first Pikmin in _pikmin_container that is in FOLLOWING state
-	for pikmin in _pikmin_container.get_children():
+	for pikmin in _pikmin_list:
 		if pikmin.current_state == pikmin.State.FOLLOWING:
 			# Calculate the direction to the reticle
 			var throw_direction = (reticle.global_transform.origin - self.global_transform.origin).normalized()
@@ -202,9 +238,6 @@ func throw_pikmin():
 			pikmin.start_throw(self.global_transform, throw_direction, reticle_distance)
 			break
 
-
-
-	
 func camera_logic(delta):
 	# camera inputs
 	if Input.is_action_just_pressed("camera_angle"):
