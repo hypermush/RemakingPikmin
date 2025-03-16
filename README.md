@@ -8,6 +8,11 @@ The player character can: spawn and dismiss Pikmin, interact with objects, throw
 
 <img src="git_images/early_screen2.PNG" alt="early screenshot" width="500"/>
 
+## Devlog
+
+Follow the devlopment of this project on my youtube channel!
+
+https://www.youtube.com/playlist?list=PLDro2ocyyqr3wBovocBWXJVdRRxccXh1r
 
 ## Features
 
