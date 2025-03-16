@@ -1,10 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=17 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
 [ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://scenes/interaction_zone.tscn" id="3_o5ufs"]
+[ext_resource type="Texture2D" uid="uid://fdjhd156jl8n" path="res://assets/textures/stone-1024.jpg" id="3_q4mh4"]
 [ext_resource type="PackedScene" uid="uid://dtn0v6wjrvn3t" path="res://assets/models/the_s.s_dolphin/scene.gltf" id="4_h4sh7"]
-[ext_resource type="Texture2D" uid="uid://biohqk7h84lxr" path="res://assets/textures/wood.png" id="5_2v2i6"]
+[ext_resource type="Texture2D" uid="uid://b7v8pag6jm2qx" path="res://assets/textures/tileable-s7002876-dark.png" id="6_mnfry"]
 [ext_resource type="PackedScene" uid="uid://raf5vb8lntpx" path="res://scenes/melon.tscn" id="7_ol4pb"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l1rx6"]
@@ -23,7 +24,7 @@ glow_enabled = true
 [sub_resource type="PrismMesh" id="PrismMesh_0u8ln"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0jfar"]
-albedo_color = Color(0.219608, 0.435294, 0.458824, 1)
+albedo_texture = ExtResource("3_q4mh4")
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_s4xlx"]
 vertices = PackedVector3Array(-212.975, 0.02, -212.975, -212.975, 0.02, 213.025, 213.025, 0.02, 213.025, 213.025, 0.02, -212.975)
@@ -35,7 +36,7 @@ size = Vector2(10, 10)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ct3t4"]
 albedo_color = Color(0.752941, 0.714381, 0.679235, 1)
-albedo_texture = ExtResource("5_2v2i6")
+albedo_texture = ExtResource("6_mnfry")
 albedo_texture_msdf = true
 uv1_triplanar = true
 
