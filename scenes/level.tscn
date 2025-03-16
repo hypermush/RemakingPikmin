@@ -1,0 +1,134 @@
+[gd_scene load_steps=16 format=3 uid="uid://ccb1iowo1ks33"]
+
+[ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
+[ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
+[ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://scenes/interaction_zone.tscn" id="3_o5ufs"]
+[ext_resource type="PackedScene" uid="uid://dtn0v6wjrvn3t" path="res://assets/models/the_s.s_dolphin/scene.gltf" id="4_h4sh7"]
+[ext_resource type="Texture2D" uid="uid://biohqk7h84lxr" path="res://assets/textures/wood.png" id="5_2v2i6"]
+[ext_resource type="PackedScene" uid="uid://raf5vb8lntpx" path="res://scenes/melon.tscn" id="7_ol4pb"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l1rx6"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_ycq45"]
+sky_material = SubResource("ProceduralSkyMaterial_l1rx6")
+
+[sub_resource type="Environment" id="Environment_ahutk"]
+background_mode = 2
+sky = SubResource("Sky_ycq45")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="PrismMesh" id="PrismMesh_0u8ln"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0jfar"]
+albedo_color = Color(0.219608, 0.435294, 0.458824, 1)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_s4xlx"]
+vertices = PackedVector3Array(-212.975, 0.02, -212.975, -212.975, 0.02, 213.025, 213.025, 0.02, 213.025, 213.025, 0.02, -212.975)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+cell_height = 0.01
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_voq8s"]
+size = Vector2(10, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ct3t4"]
+albedo_color = Color(0.752941, 0.714381, 0.679235, 1)
+albedo_texture = ExtResource("5_2v2i6")
+albedo_texture_msdf = true
+uv1_triplanar = true
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_4r6u1"]
+data = PackedVector3Array(5, 0, 5, -5, 0, 5, 5, 0, -5, -5, 0, 5, -5, 0, -5, 5, 0, -5)
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ahutk")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Player" parent="." node_paths=PackedStringArray("_idle_pikmin_container") instance=ExtResource("1_ihxn3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.918456, -2)
+top_level = true
+pikmin_scene = ExtResource("2_l3mf0")
+_idle_pikmin_container = NodePath("../IdlePikminContainer")
+
+[node name="Plants" type="Node" parent="."]
+
+[node name="Plant" type="MeshInstance3D" parent="Plants"]
+transform = Transform3D(-1, -8.72533e-08, -5.44212e-09, 0, -0.0622506, 0.998061, -8.74228e-08, 0.998061, 0.0622506, 0, 0.41074, 4.41044)
+mesh = SubResource("PrismMesh_0u8ln")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
+
+[node name="Plant2" type="MeshInstance3D" parent="Plants"]
+transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, 0, 0.41074, 1.63019)
+mesh = SubResource("PrismMesh_0u8ln")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
+
+[node name="Plant3" type="MeshInstance3D" parent="Plants"]
+transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, 5.80532, 0.41074, -1.85997)
+mesh = SubResource("PrismMesh_0u8ln")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
+
+[node name="Plant4" type="MeshInstance3D" parent="Plants"]
+transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, 5.80532, 0.41074, -6.57278)
+mesh = SubResource("PrismMesh_0u8ln")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
+
+[node name="Plant5" type="MeshInstance3D" parent="Plants"]
+transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, -6.72835, 0.41074, -6.57278)
+mesh = SubResource("PrismMesh_0u8ln")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
+
+[node name="Plant6" type="MeshInstance3D" parent="Plants"]
+transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, -6.72835, 0.41074, 2.40808)
+mesh = SubResource("PrismMesh_0u8ln")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, -8.33596e-08, -0.301322, 0.953523, -2.63424e-08, 0.953523, 0.301322, 0, 16.1193, 0)
+
+[node name="InteractionZone1" parent="." instance=ExtResource("3_o5ufs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.56022, 0, 3.40577)
+interaction_type = 1
+
+[node name="InteractionZone2" parent="." instance=ExtResource("3_o5ufs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.02829, 0, -0.512918)
+
+[node name="Ship" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.56566, 0, -1.77127)
+
+[node name="Sketchfab_Scene" parent="Ship" instance=ExtResource("4_h4sh7")]
+transform = Transform3D(0.592238, 0, 0.805763, 0, 1, 0, -0.805763, 0, 0.592238, -5.41088, 0, 0)
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_s4xlx")
+
+[node name="Floor" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(42.695, 0, 0, 0, 42.695, 0, 0, 0, 42.695, 0, 0, 0)
+mesh = SubResource("PlaneMesh_voq8s")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_ct3t4")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Floor/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_4r6u1")
+
+[node name="DevPikmin" parent="." instance=ExtResource("2_l3mf0")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -12.3546)
+
+[node name="IdlePikminContainer" type="Node3D" parent="."]
+
+[node name="Melon" parent="." instance=ExtResource("7_ol4pb")]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1, 11.7945, -19.3381)

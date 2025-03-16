@@ -1,0 +1,11 @@
+Model Information:
+* title:	The s.s dolphin
+* source:	https://sketchfab.com/3d-models/the-ss-dolphin-79d5f8c55d7949b281d7e9055946758f
+* author:	28ferriv (https://sketchfab.com/28ferriv)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "The s.s dolphin" (https://sketchfab.com/3d-models/the-ss-dolphin-79d5f8c55d7949b281d7e9055946758f) by 28ferriv (https://sketchfab.com/28ferriv) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

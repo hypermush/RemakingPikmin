@@ -1,0 +1,11 @@
+Model Information:
+* title:	Red Pikmin
+* source:	https://sketchfab.com/3d-models/red-pikmin-cfac9cc136b04c8d81953e79d06994b3
+* author:	Théo Horla (https://sketchfab.com/theo.horla)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Red Pikmin" (https://sketchfab.com/3d-models/red-pikmin-cfac9cc136b04c8d81953e79d06994b3) by Théo Horla (https://sketchfab.com/theo.horla) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

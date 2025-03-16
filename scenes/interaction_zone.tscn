@@ -1,0 +1,54 @@
+[gd_scene load_steps=9 format=3 uid="uid://hknnxwg8cib"]
+
+[ext_resource type="Script" path="res://scripts/interaction_zone.gd" id="1_khjci"]
+[ext_resource type="PackedScene" uid="uid://bsueyaudgcokx" path="res://scenes/interaction_ui.tscn" id="2_ua8lj"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_mbmix"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4wqu3"]
+transparency = 1
+albedo_color = Color(0.32549, 0, 0.247059, 0.803922)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_lqjbj"]
+height = 0.504914
+radius = 1.99993
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_2lt2y"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kuget"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_2lt2y")
+
+[sub_resource type="QuadMesh" id="QuadMesh_0tfox"]
+
+[node name="InteractionZone" type="Node3D"]
+script = ExtResource("1_khjci")
+
+[node name="ZoneHalo" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(4, 0, 0, 0, 0.245, 0, 0, 0, 4, 0, 0.207157, 0)
+mesh = SubResource("CylinderMesh_mbmix")
+surface_material_override/0 = SubResource("StandardMaterial3D_4wqu3")
+
+[node name="Area3D" type="Area3D" parent="."]
+unique_name_in_owner = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.201176, 0)
+shape = SubResource("CylinderShape3D_lqjbj")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+unique_name_in_owner = true
+transparent_bg = true
+size = Vector2i(1687, 617)
+
+[node name="Control" parent="SubViewport" instance=ExtResource("2_ua8lj")]
+
+[node name="UIMesh" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(4.07, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12134, 0)
+material_override = SubResource("StandardMaterial3D_kuget")
+mesh = SubResource("QuadMesh_0tfox")
