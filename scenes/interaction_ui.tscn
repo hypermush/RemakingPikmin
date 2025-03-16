@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://bsueyaudgcokx"]
+[gd_scene load_steps=2 format=3 uid="uid://bsueyaudgcokx"]
+
+[ext_resource type="FontFile" uid="uid://c83g23gy4jspx" path="res://assets/fonts/okay_jelly/Okay Jelly.otf" id="1_ee3cy"]
 
 [node name="Control" type="Control"]
 self_modulate = Color(1, 1, 1, 0)
@@ -14,15 +16,19 @@ mouse_filter = 2
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -257.45
-offset_bottom = -108.215
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -427.98
+offset_top = -44.0
+offset_right = 429.02
+offset_bottom = 44.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(1.17, 1.17)
-theme_override_font_sizes/font_size = 146
+theme_override_fonts/font = ExtResource("1_ee3cy")
+theme_override_font_sizes/font_size = 94
 text = "Press A to interact"
 horizontal_alignment = 1
 vertical_alignment = 1
