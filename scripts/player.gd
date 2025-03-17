@@ -14,6 +14,14 @@ var _pikmin_list: Array = [] # List to track Pikmin
 @export var follow_point: PackedScene # set in inspector
 @onready var follow_source: Node3D = %FollowSource
 
+# follow layers
+var layers1 = [2, 4, 4, 2]
+var layers2 = [2, 4, 6, 6, 4, 2]
+var layers3 = [2, 6, 6, 8, 8, 6, 6, 2]
+var layers4 = [3, 7, 9, 9, 11, 11, 11, 9, 9, 7, 3]
+var layers5 = [4, 6, 8, 10, 12, 12, 12, 12, 10, 8, 6, 4]
+var squad_grid = layers1
+
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
 
@@ -197,14 +205,52 @@ func whistle_pikmin():
 		# add follow point as child of follow source
 		var new_follow_point = follow_point.instantiate()
 		new_follow_point.name = "FollowPoint" + str(_follow_count)
-		new_follow_point.transform.origin = Vector3(0, 0, _follow_count * 1.0)
+		new_follow_point.transform.origin = Vector3(0, 0, 1.0)
 		follow_source.add_child(new_follow_point)
 		
+		# multi grid based on follow count
+		if _follow_count < 13:
+			squad_grid = layers1
+		elif _follow_count > 13 and _follow_count < 25:
+			squad_grid = layers2
+		elif _follow_count >= 25 and _follow_count < 45:
+			squad_grid = layers3
+		elif _follow_count >= 45 and _follow_count < 90:
+			squad_grid = layers4
+		elif _follow_count >= 90 and _follow_count < 101:
+			squad_grid = layers5
+		elif _follow_count >= 101:
+			Log.print("101+ is altogether too many  pikmin!")
+		generate_follow_positions(squad_grid)
+
+func generate_follow_positions(squad_grid):
+	#Log.print("Generate Called with squad grid:" + str(squad_grid))
+	var follow_positions = []
+	var pikmin_index = 0  # Tracks which Pikmin we're placing
+	var row_z_offset = 0.5  # Distance between rows
+	
+	for row in range(squad_grid.size()):
+		var num_in_row = squad_grid[row]
+		var row_z = row * row_z_offset  # Move row further back
+		var row_x_offset = 0.5  # Spacing between Pikmin
+		var row_width = (num_in_row - 1) * row_x_offset  # Total row width
+		var row_start_x = -row_width / 2  # Center row
+
+		for i in range(num_in_row):
+			# Calculate Pikmin position
+			var x_pos = row_start_x + (i * row_x_offset)
+			var z_pos = row_z
+			follow_positions.append(Vector3(x_pos, 0, z_pos))  # Negative Z to follow player
+
+			pikmin_index += 1
+
+	# Now apply positions to follow points
+	var follow_points = follow_source.get_children()
+	for i in range(min(follow_points.size(), follow_positions.size())):
+		follow_points[i].transform.origin = follow_positions[i]
+
 func update_pikmin_follow_targets():
 	var follow_points = follow_source.get_children()
-	
-	Log.print("pikmin list count: " + str(_pikmin_list.size()))
-	Log.print("follow point count: " + str(follow_points.size()))
 	
 	if _pikmin_list.is_empty() or follow_points.is_empty():
 		Log.print("No Pikmin or follow points to assign!")
@@ -222,7 +268,6 @@ func interact_call():
 			current_interaction_zone.interact()
 		else:
 			Log.print("No interaction available.")
-			
 
 func throw():
 	if Input.is_action_just_pressed("left_click"):

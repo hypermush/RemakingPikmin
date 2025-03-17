@@ -25,7 +25,7 @@ var target_position: Vector3  # The Pikmin's assigned spot in the zone
 
 @export var current_state: State = State.FOLLOWING  # Default state is FOLLOWING
 
-const SPEED = 3.0
+const SPEED = 4.0
 
 func _ready():
 	_navigation_agent.avoidance_enabled = true  # Makes Pikmin avoid each other
@@ -62,9 +62,6 @@ func _physics_process(delta):
 		var next_position = _navigation_agent.get_next_path_position()
 		var direction = (next_position - global_transform.origin).normalized()
 		var distance = global_transform.origin.distance_to(target_position)
-
-		#Log.print("Distance to target: " + str(distance))
-		#Log.print("Target desired distance: " + str(_navigation_agent.target_desired_distance))
 
 		if distance > 0.1:  # Allow small tolerance before stopping
 			velocity = direction * SPEED
