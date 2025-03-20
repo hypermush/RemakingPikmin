@@ -1,8 +1,6 @@
 # Player Code:
 extends CharacterBody3D
 
-
-
 # temp test stuff for spawning pikmin at will
 @export var pikmin_scene: PackedScene  # Drag and drop Pikmin.tscn in the inspector
 @onready var _target_point: Node3D = %TargetPoint  # The point Pikmin will follow
@@ -13,6 +11,7 @@ var _pikmin_list: Array = [] # List to track Pikmin
 @onready var _follow_count := 0
 @export var follow_point: PackedScene # set in inspector
 @onready var follow_source: Node3D = %FollowSource
+@export var _starter_squad_size := 12
 
 # follow layers
 var layers1 = [2, 4, 4, 2]
@@ -78,6 +77,9 @@ func _ready() -> void:
 	if not _idle_pikmin_container:
 		Log.print("no idle container set")
 	
+	# starter squad size
+	for num in _starter_squad_size:
+		add_follow_point()
 
 func _process(delta):
 	move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
@@ -143,6 +145,11 @@ func spawn_pikmin():
 		
 		# Assign the player's target point and player reference
 		pikmin.player = _skin
+		
+		if _pikmin_list.size() > _follow_count:
+			#Log.print("new spot for new pikmin")
+			add_follow_point()
+			
 		update_pikmin_follow_targets()
 		
 func _unhandled_input(event: InputEvent) -> void:
@@ -200,28 +207,35 @@ func whistle_pikmin():
 		# debugging squad shape mechanics
 		# generating follow grid
 		# pressing b will up the follow count
-		_follow_count += 1
-		Log.print("Follow Count is now:" + str(_follow_count))
+		#Log.print("Follow Count is now:" + str(_follow_count))
 		# add follow point as child of follow source
-		var new_follow_point = follow_point.instantiate()
-		new_follow_point.name = "FollowPoint" + str(_follow_count)
-		new_follow_point.transform.origin = Vector3(0, 0, 1.0)
-		follow_source.add_child(new_follow_point)
+		add_follow_point()
 		
-		# multi grid based on follow count
-		if _follow_count < 13:
-			squad_grid = layers1
-		elif _follow_count > 13 and _follow_count < 25:
-			squad_grid = layers2
-		elif _follow_count >= 25 and _follow_count < 45:
-			squad_grid = layers3
-		elif _follow_count >= 45 and _follow_count < 90:
-			squad_grid = layers4
-		elif _follow_count >= 90 and _follow_count < 101:
-			squad_grid = layers5
-		elif _follow_count >= 101:
-			Log.print("101+ is altogether too many  pikmin!")
-		generate_follow_positions(squad_grid)
+
+func add_follow_point():
+	_follow_count += 1
+	var new_follow_point = follow_point.instantiate()
+	new_follow_point.name = "FollowPoint" + str(_follow_count)
+	new_follow_point.transform.origin = Vector3(0, 0, 1.0)
+	follow_source.add_child(new_follow_point)
+	determine_grid()
+
+func determine_grid():
+	# multi grid based on follow count
+	if _follow_count < 13:
+		squad_grid = layers1
+	elif _follow_count >= 13 and _follow_count < 25:
+		squad_grid = layers2
+	elif _follow_count >= 25 and _follow_count < 45:
+		squad_grid = layers3
+	elif _follow_count >= 45 and _follow_count < 90:
+		squad_grid = layers4
+	elif _follow_count >= 90 and _follow_count < 101:
+		squad_grid = layers5
+	elif _follow_count >= 101:
+		Log.print("101+ is altogether too many  pikmin!")
+		return
+	generate_follow_positions(squad_grid)
 
 func generate_follow_positions(squad_grid):
 	#Log.print("Generate Called with squad grid:" + str(squad_grid))
@@ -257,7 +271,7 @@ func update_pikmin_follow_targets():
 		return
 		
 	for i in range(min(_pikmin_list.size(), follow_points.size())):
-		Log.print("Assigning Pikmin " + str(i) + " to follow point " + str(follow_points[i].name))
+		# Log.print("Assigning Pikmin " + str(i) + " to follow point " + str(follow_points[i].name))
 		_pikmin_list[i].target_follow_point = follow_points[i]  # Assign reference
 
 func interact_call():

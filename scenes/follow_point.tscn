@@ -1,7 +1,8 @@
 [gd_scene load_steps=3 format=3 uid="uid://c5kgw5m1gsrvt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vl6tg"]
-albedo_color = Color(1, 0, 0, 1)
+transparency = 1
+albedo_color = Color(1, 0, 0, 0.239216)
 
 [sub_resource type="SphereMesh" id="SphereMesh_varp1"]
 material = SubResource("StandardMaterial3D_vl6tg")
