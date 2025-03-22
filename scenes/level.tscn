@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=19 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
@@ -27,6 +27,8 @@ glow_enabled = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0jfar"]
 albedo_texture = ExtResource("3_q4mh4")
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_lhkm5"]
+
 [sub_resource type="NavigationMesh" id="NavigationMesh_s4xlx"]
 vertices = PackedVector3Array(-212.975, 0.02, -212.975, -212.975, 0.02, 213.025, 213.025, 0.02, 213.025, 213.025, 0.02, -212.975)
 polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
@@ -53,11 +55,12 @@ environment = SubResource("Environment_ahutk")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Player" parent="." node_paths=PackedStringArray("_idle_pikmin_container") instance=ExtResource("1_ihxn3")]
+[node name="Player" parent="." node_paths=PackedStringArray("_idle_pikmin_container", "_squad_pikmin_container") instance=ExtResource("1_ihxn3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.918456, -2)
 top_level = true
 pikmin_scene = ExtResource("2_l3mf0")
 _idle_pikmin_container = NodePath("../IdlePikminContainer")
+_squad_pikmin_container = NodePath("../SquadPikminContainer")
 follow_point = ExtResource("3_wc42g")
 
 [node name="Plants" type="Node" parent="."]
@@ -113,6 +116,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.56566, 0, -1.77127)
 
 [node name="Sketchfab_Scene" parent="Ship" instance=ExtResource("4_h4sh7")]
 transform = Transform3D(0.592238, 0, 0.805763, 0, 1, 0, -0.805763, 0, 0.592238, -5.41088, 0, 0)
+visible = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ship"]
+transform = Transform3D(2.25, 0, 0, 0, 4.44, 0, 0, 0, 4.415, 0, 5.76803, 0)
+mesh = SubResource("CylinderMesh_lhkm5")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_s4xlx")
@@ -136,3 +144,5 @@ current_state = 2
 
 [node name="Melon" parent="." instance=ExtResource("7_ol4pb")]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1, 11.7945, -19.3381)
+
+[node name="SquadPikminContainer" type="Node3D" parent="."]

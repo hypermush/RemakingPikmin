@@ -28,7 +28,7 @@ var target_position: Vector3  # The Pikmin's assigned spot in the zone
 const SPEED = 4.0
 
 func _ready():
-	_navigation_agent.avoidance_enabled = true  # Makes Pikmin avoid each other
+	_navigation_agent.avoidance_enabled = false  # Not sure if this results in more organic movement
 	_navigation_agent.path_desired_distance = 0.1  # Lower to allow finer control to the path
 	_navigation_agent.radius = 0.5  # Adjust radius if needed for the Pikmin's size
 	_navigation_agent.target_desired_distance = 0.01
@@ -70,7 +70,6 @@ func _physics_process(delta):
 
 		move_and_slide()
 
-
 # FOLLOWING state: Pikmin moves toward the target
 func follow_target(delta: float) -> void:
 	if target_follow_point:
@@ -88,7 +87,6 @@ func idle_state(delta: float) -> void:
 # GATHERING state: Pikmin interacts with nearby objects (could be implemented later)
 func gathering_state(delta: float) -> void:
 	pass  # Placeholder for any behavior when Pikmin are gathering.
-
 
 func start_throw(origin_transform: Transform3D, direction: Vector3, reticle_distance: float):
 	current_state = State.THROWN  # <--- CRITICAL
@@ -115,8 +113,6 @@ func start_throw(origin_transform: Transform3D, direction: Vector3, reticle_dist
 	var throw_direction = Vector3(target_position.x - global_transform.origin.x, 0, target_position.z - global_transform.origin.z).normalized()
 	velocity = throw_direction * horizontal_velocity
 	velocity.y = vertical_velocity
-
-
 
 func thrown_state_update(delta: float):
 	velocity.y -= (gravity * delta)

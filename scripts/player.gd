@@ -4,10 +4,12 @@ extends CharacterBody3D
 # temp test stuff for spawning pikmin at will
 @export var pikmin_scene: PackedScene  # Drag and drop Pikmin.tscn in the inspector
 @onready var _target_point: Node3D = %TargetPoint  # The point Pikmin will follow
-#@onready var _pikmin_container: Node3D = $PikminContainer  # Empty Node3D for organization
 var _pikmin_list: Array = [] # List to track Pikmin
 @onready var _debug_spawn: Node3D = $PlayerSkin/DebugSpawnPoint
+# these two are for scene tree organization
 @export var _idle_pikmin_container: Node3D
+@export var _squad_pikmin_container: Node3D
+
 @onready var _follow_count := 0
 @export var follow_point: PackedScene # set in inspector
 @onready var follow_source: Node3D = %FollowSource
@@ -63,6 +65,9 @@ var camera_rotation_target := 0.0
 # The downward acceleration when in the air, in meters per second squared
 @export var fall_acceleration = 100
 
+@onready var reticle: Node3D = $Reticle 
+@export var reticle_distance: float = 10.0  # Default distance for the reticle
+
 var target_velocity = Vector3.ZERO
 var tracked_velocity = 0
 var move_input = Vector3.ZERO
@@ -76,6 +81,8 @@ func _ready() -> void:
 	
 	if not _idle_pikmin_container:
 		Log.print("no idle container set")
+	if not _squad_pikmin_container:
+		Log.print("no squad container set")
 	
 	# starter squad size
 	for num in _starter_squad_size:
@@ -86,9 +93,6 @@ func _process(delta):
 	move_input.z = Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
 	throw()
 	update_reticle_position()
-	
-@onready var reticle: Node3D = $Reticle 
-@export var reticle_distance: float = 10.0  # Default distance for the reticle
 
 func _physics_process(delta: float) -> void:
 	camera_logic(delta)
@@ -124,22 +128,12 @@ func toggle_camera_zoom():
 		
 func set_interaction_zone(zone):
 	current_interaction_zone = zone
-
-func dismiss_squad():
-	Log.print("dismiss called")
-	for pikmin in _pikmin_list:
-		if pikmin.is_in_group("pikmin"):
-			pikmin.current_state = pikmin.State.IDLE
-			pikmin.player = null  # Remove the reference to the player (no longer follows)
-			_pikmin_list.erase(pikmin)
-			pikmin.queue_free()
-			Log.print("pikmin should now be idle")
 	
 func spawn_pikmin():
 	if pikmin_scene:
 		var pikmin = pikmin_scene.instantiate()  # Create a new Pikmin instance
-		get_parent().add_child(pikmin)  # Moves Pikmin to scene root, outside of player movement
-		_pikmin_list.append(pikmin)  # Parent it under a container node
+		_squad_pikmin_container.add_child(pikmin)
+		_pikmin_list.append(pikmin)
 		pikmin.global_transform.origin = _debug_spawn.global_transform.origin
 		#Log.print("Making a pikmin at " + str(_debug_spawn.global_transform.origin))
 		
@@ -155,7 +149,6 @@ func spawn_pikmin():
 func _unhandled_input(event: InputEvent) -> void:
 	pass
 	
-
 # Helpers: ========================
 
 func player_movement(delta):
@@ -197,7 +190,15 @@ func dismiss_pikmin():
 	# Added X on keyboard
 	if Input.is_action_just_pressed("dismiss"):
 		SoundEffects.play_sound("dismiss-whistle")
-		dismiss_squad()
+		Log.print("dismiss called")
+		for pikmin in _pikmin_list:
+			if pikmin.is_in_group("pikmin"):
+				pikmin.current_state = pikmin.State.IDLE
+				pikmin.player = null  # Remove the reference to the player (no longer follows)
+				_squad_pikmin_container.remove_child(pikmin)
+				_idle_pikmin_container.add_child(pikmin)
+				#Log.print("pikmin should now be idle")
+		_pikmin_list.clear()
 		update_pikmin_follow_targets()
 		
 func whistle_pikmin():
@@ -210,7 +211,6 @@ func whistle_pikmin():
 		#Log.print("Follow Count is now:" + str(_follow_count))
 		# add follow point as child of follow source
 		add_follow_point()
-		
 
 func add_follow_point():
 	_follow_count += 1
@@ -250,13 +250,20 @@ func generate_follow_positions(squad_grid):
 		var row_width = (num_in_row - 1) * row_x_offset  # Total row width
 		var row_start_x = -row_width / 2  # Center row
 
+		# Generate positions for this row
+		var row_positions = []
 		for i in range(num_in_row):
-			# Calculate Pikmin position
 			var x_pos = row_start_x + (i * row_x_offset)
 			var z_pos = row_z
-			follow_positions.append(Vector3(x_pos, 0, z_pos))  # Negative Z to follow player
+			row_positions.append(Vector3(x_pos, 0, z_pos))
 
-			pikmin_index += 1
+		# Reverse row if it's an odd index
+		if row % 2 == 1:
+			row_positions.reverse()
+
+		# Add to final list
+		follow_positions.append_array(row_positions)
+		pikmin_index += num_in_row
 
 	# Now apply positions to follow points
 	var follow_points = follow_source.get_children()
@@ -288,13 +295,19 @@ func throw():
 		throw_pikmin()
 
 func throw_pikmin():
-	# Find the first Pikmin in _pikmin_container that is in FOLLOWING state
+	# Find the first Pikmin in _pikmin_list that is in FOLLOWING state
 	for pikmin in _pikmin_list:
 		if pikmin.current_state == pikmin.State.FOLLOWING:
 			# Calculate the direction to the reticle
 			var throw_direction = (reticle.global_transform.origin - self.global_transform.origin).normalized()
 			# Call a function on the Pikmin to handle the throw
 			pikmin.start_throw(self.global_transform, throw_direction, reticle_distance)
+			_squad_pikmin_container.remove_child(pikmin)
+			_idle_pikmin_container.add_child(pikmin)
+			_pikmin_list.erase(pikmin)
+			
+			update_pikmin_follow_targets()
+			
 			break
 
 func camera_logic(delta):
