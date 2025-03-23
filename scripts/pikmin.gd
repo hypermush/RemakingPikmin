@@ -72,42 +72,42 @@ func _physics_process(delta):
 
 func update_collision(state):
 	if state == State.THROWN:
+		# don't bump into player (layer 1)
 		collision_mask &= ~(1)
 	else:
 		collision_mask |= (1)
 
 # FOLLOWING state: Pikmin moves toward the target
-func follow_target(delta: float) -> void:
+func follow_target(_delta: float) -> void:
 	if target_follow_point:
 		target_position = target_follow_point.global_transform.origin  # Direct access
 		_navigation_agent.set_target_position(target_position)
 
 # WAITING state: Pikmin waits, can implement more advanced logic like idle animations here
-func waiting_state(delta: float) -> void:
+func waiting_state(_delta: float) -> void:
 	pass  # Placeholder for any behavior when Pikmin are in the waiting state.
 	
 # IDLE state: Pikmin does nothing
-func idle_state(delta: float) -> void:
+func idle_state(_delta: float) -> void:
 	pass  # Placeholder for any behavior when Pikmin are idle.
 
 # GATHERING state: Pikmin interacts with nearby objects (could be implemented later)
-func gathering_state(delta: float) -> void:
+func gathering_state(_delta: float) -> void:
 	pass  # Placeholder for any behavior when Pikmin are gathering.
 
 func start_throw(origin_transform: Transform3D, direction: Vector3, reticle_distance: float):
 	current_state = State.THROWN  # <--- CRITICAL
 	update_collision(current_state)
 	# Get the target position (reticle's position)
-	var target_position = origin_transform.origin + direction * reticle_distance
+	var throw_target_position = origin_transform.origin + direction * reticle_distance
 
 	# Calculate the horizontal distance to the target
-	var horizontal_distance = Vector2(target_position.x - global_transform.origin.x, target_position.z - global_transform.origin.z).length()
+	var horizontal_distance = Vector2(throw_target_position.x - global_transform.origin.x, throw_target_position.z - global_transform.origin.z).length()
 
 	# Calculate the vertical distance to the target
-	var vertical_distance = target_position.y - global_transform.origin.y
+	var vertical_distance = throw_target_position.y - global_transform.origin.y
 
 	# Calculate the required initial velocity using kinematic equations
-	var gravity = 9.8  # Adjust this based on your game's gravity
 	var angle = 45.0 * (PI / 180)  # 45 degrees for a balanced arc (you can adjust this)
 	var initial_speed = sqrt((gravity * horizontal_distance * horizontal_distance) / (2 * (horizontal_distance * tan(angle) - vertical_distance) * cos(angle) * cos(angle)))
 
@@ -116,9 +116,12 @@ func start_throw(origin_transform: Transform3D, direction: Vector3, reticle_dist
 	var vertical_velocity = initial_speed * sin(angle)
 
 	# Apply the velocity in the direction of the reticle
-	var throw_direction = Vector3(target_position.x - global_transform.origin.x, 0, target_position.z - global_transform.origin.z).normalized()
+	var throw_direction = Vector3(throw_target_position.x - global_transform.origin.x, 0, throw_target_position.z - global_transform.origin.z).normalized()
 	velocity = throw_direction * horizontal_velocity
 	velocity.y = vertical_velocity
+	
+	# make sure the throw target becomes the nav target when they land
+	target_position = throw_target_position
 
 func thrown_state_update(delta: float):
 	velocity.y -= (gravity * delta)
@@ -128,5 +131,7 @@ func thrown_state_update(delta: float):
 	if is_on_floor():
 		# Transition back to WAITING or FOLLOWING, or do something else
 		current_state = State.WAITING
+		# ensure that the target pos is its current spot
+		_navigation_agent.set_target_position(target_position)
 		update_collision(current_state)
 		velocity = Vector3.ZERO

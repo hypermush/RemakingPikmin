@@ -96,7 +96,7 @@ func pre_generate_positions():
 		# This could be done once at the start of the game or on demand
 		pass
 
-func _process(delta):
+func _process(_delta):
 	move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
 	move_input.z = Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
 	throw()
@@ -176,7 +176,7 @@ func spawn_pikmin():
 			
 		update_pikmin_follow_targets()
 		
-func _unhandled_input(event: InputEvent) -> void:
+func _unhandled_input(_event: InputEvent) -> void:
 	pass
 	
 # Helpers: ========================
@@ -264,14 +264,13 @@ func determine_grid():
 		return
 	generate_follow_positions(squad_grid)
 
-func generate_follow_positions(squad_grid):
+func generate_follow_positions(current_squad_grid):
 	#Log.print("Generate Called with squad grid:" + str(squad_grid))
 	var follow_positions = []
-	var pikmin_index = 0  # Tracks which Pikmin we're placing
 	var row_z_offset = 0.5  # Distance between rows
 	
-	for row in range(squad_grid.size()):
-		var num_in_row = squad_grid[row]
+	for row in range(current_squad_grid.size()):
+		var num_in_row = current_squad_grid[row]
 		var row_z = row * row_z_offset  # Move row further back
 		var row_x_offset = 0.5  # Spacing between Pikmin
 		var row_width = (num_in_row - 1) * row_x_offset  # Total row width
@@ -290,7 +289,6 @@ func generate_follow_positions(squad_grid):
 
 		# Add to final list
 		follow_positions.append_array(row_positions)
-		pikmin_index += num_in_row
 
 	# Now apply positions to follow points
 	var follow_points = follow_source.get_children()
@@ -329,13 +327,13 @@ func throw_pikmin():
 			var throw_direction = (reticle.global_transform.origin - self.global_transform.origin).normalized()
 			# Call a function on the Pikmin to handle the throw
 			pikmin.start_throw(self.global_transform, throw_direction, reticle_distance)
+			pikmin.target_follow_point = null
 			_squad_pikmin_container.remove_child(pikmin)
 			_idle_pikmin_container.add_child(pikmin)
-			_pikmin_list.erase(pikmin)
-			
-			update_pikmin_follow_targets()
-			
+			_pikmin_list.erase(pikmin)			
 			break
+			
+	update_pikmin_follow_targets()
 
 func camera_logic(delta):
 	# camera inputs
@@ -347,9 +345,10 @@ func camera_logic(delta):
 		camera_rotation_target = _skin.global_rotation.y
 	if Input.is_action_just_pressed("camera_zoom"):
 		toggle_camera_zoom()
-		
+	
+	var angle_diff
 	if update_camera_rotation:
-		var angle_diff = fposmod(camera_rotation_target - _camera_pivot.rotation.y + PI, TAU) - PI  # Normalize to [-PI, PI]
+		angle_diff = fposmod(camera_rotation_target - _camera_pivot.rotation.y + PI, TAU) - PI  # Normalize to [-PI, PI]
 		
 		if absf(angle_diff) > camera_tolerance:
 			var t = absf(angle_diff) / PI  # Normalize [0, 1] based on how far we have to rotate
@@ -371,7 +370,7 @@ func camera_logic(delta):
 		eased_speed = max(eased_speed, min_speed)  # Ensure minimum speed
 		_camera_spring.spring_length += sign(zoom_diff) * min(absf(zoom_diff), delta * eased_speed)
 	# finally camera angle
-	var angle_diff = camera_angle_target - _camera_pivot.rotation.x
+	angle_diff = camera_angle_target - _camera_pivot.rotation.x
 
 	if absf(angle_diff) > camera_tolerance:
 		var t = absf(angle_diff) / absf(angle_birds_eye - angle_over_shoulder)  # Normalize [0, 1]

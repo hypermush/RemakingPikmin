@@ -29,7 +29,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not _uimesh.visible:
 		return  # No need to update if it's not visible
 		
@@ -44,8 +44,8 @@ func _process(delta: float) -> void:
 		_uimesh.scale = current_scale  # Restore the scale after setting the basis)
 		
 		# Adjust scale dynamically based on distance
-		var distance = _uimesh.global_transform.origin.distance_to(camera.global_transform.origin)
-		#_uimesh.scale = Vector3.ONE * clamp(distance * 0.1, 0.5, 2.0)  # Adjust min/max as needed)
+		var _distance = _uimesh.global_transform.origin.distance_to(camera.global_transform.origin)
+		#_uimesh.scale = Vector3.ONE * clamp(_distance * 0.1, 0.5, 2.0)  # Adjust min/max as needed)
 		
 # trying to detect when a body enters (signal)
 func bodyEntered(body: Node3D):
