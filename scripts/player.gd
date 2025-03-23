@@ -3,7 +3,6 @@ extends CharacterBody3D
 
 # temp test stuff for spawning pikmin at will
 @export var pikmin_scene: PackedScene  # Drag and drop Pikmin.tscn in the inspector
-@onready var _target_point: Node3D = %TargetPoint  # The point Pikmin will follow
 var _pikmin_list: Array = [] # List to track Pikmin
 @onready var _debug_spawn: Node3D = $PlayerSkin/DebugSpawnPoint
 # these two are for scene tree organization
@@ -22,6 +21,9 @@ var layers3 = [2, 6, 6, 8, 8, 6, 6, 2]
 var layers4 = [3, 7, 9, 9, 11, 11, 11, 9, 9, 7, 3]
 var layers5 = [4, 6, 8, 10, 12, 12, 12, 12, 10, 8, 6, 4]
 var squad_grid = layers1
+var last_known_count = 0
+var max_pikmin_count = 100  # Estimated upper limit
+var all_possible_positions = []
 
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
@@ -88,6 +90,12 @@ func _ready() -> void:
 	for num in _starter_squad_size:
 		add_follow_point()
 
+func pre_generate_positions():
+	for i in range(max_pikmin_count):
+		# Generate positions ahead of time, storing them in a list
+		# This could be done once at the start of the game or on demand
+		pass
+
 func _process(delta):
 	move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
 	move_input.z = Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
@@ -102,7 +110,29 @@ func _physics_process(delta: float) -> void:
 	whistle_pikmin()
 	dev_spawn_pikmin()
 	mouse_cursor_visible()
+	check_pikmin_recruitment()
 	
+func check_pikmin_recruitment():
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.set_shape($RecruitmentAreaShape.shape)  # Make this a small sphere or box
+	
+	query.transform = $RecruitmentAreaShape.global_transform  # Set the query's position
+	query.collision_mask = 2  # Detect Pikmin layer (Layer 2)
+
+	var results = space_state.intersect_shape(query, 10)
+	for result in results:
+		var pikmin = result.collider
+		if pikmin and (pikmin.current_state == pikmin.State.WAITING
+					or pikmin.current_state == pikmin.State.IDLE):
+			pikmin.current_state = pikmin.State.FOLLOWING
+			_idle_pikmin_container.remove_child(pikmin)
+			_squad_pikmin_container.add_child(pikmin)
+			_pikmin_list.append(pikmin)
+			pikmin.player = _skin
+			update_pikmin_follow_targets()
+			#Log.print("Pikmin Collision, Following?")
+
 # toggle between over the shoulder and bird's eye view
 func toggle_camera_angle():
 	if _current_angle_enum == CameraAngles.birds_eye:
@@ -204,13 +234,7 @@ func dismiss_pikmin():
 func whistle_pikmin():
 	# whistle, b on controller, c on keyboard
 	if Input.is_action_just_pressed("whistle"):
-		#Log.print("whistle")
-		# debugging squad shape mechanics
-		# generating follow grid
-		# pressing b will up the follow count
-		#Log.print("Follow Count is now:" + str(_follow_count))
-		# add follow point as child of follow source
-		add_follow_point()
+		Log.print("whistle")
 
 func add_follow_point():
 	_follow_count += 1
@@ -218,7 +242,10 @@ func add_follow_point():
 	new_follow_point.name = "FollowPoint" + str(_follow_count)
 	new_follow_point.transform.origin = Vector3(0, 0, 1.0)
 	follow_source.add_child(new_follow_point)
-	determine_grid()
+	
+	if _follow_count != last_known_count:
+		determine_grid()
+		last_known_count = _follow_count
 
 func determine_grid():
 	# multi grid based on follow count
@@ -274,7 +301,7 @@ func update_pikmin_follow_targets():
 	var follow_points = follow_source.get_children()
 	
 	if _pikmin_list.is_empty() or follow_points.is_empty():
-		Log.print("No Pikmin or follow points to assign!")
+		#Log.print("No Pikmin or follow points to assign!")
 		return
 		
 	for i in range(min(_pikmin_list.size(), follow_points.size())):

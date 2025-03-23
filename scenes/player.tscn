@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://x0f6skrphdbu"]
+[gd_scene load_steps=7 format=3 uid="uid://x0f6skrphdbu"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_0nf4c"]
 [ext_resource type="PackedScene" uid="uid://pbrgnkxxnb4d" path="res://assets/models/captain_olimar/scene.gltf" id="2_7mkht"]
@@ -9,9 +9,11 @@ points = PackedVector3Array(-0.125207, -0.532801, -0.480507, 0.0227831, 0.47607,
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_jouno"]
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_4o260"]
+radius = 0.875
+
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-collision_layer = 5
 collision_mask = 5
 script = ExtResource("1_0nf4c")
 
@@ -47,3 +49,6 @@ unique_name_in_owner = true
 
 [node name="Reticle" parent="." instance=ExtResource("2_fcx2p")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.878482, -1.88311)
+
+[node name="RecruitmentAreaShape" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_4o260")

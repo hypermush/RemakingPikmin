@@ -132,15 +132,17 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_ct3t4")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Floor"]
+collision_layer = 5
+collision_mask = 5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Floor/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_4r6u1")
 
-[node name="DevPikmin" parent="." instance=ExtResource("2_l3mf0")]
+[node name="IdlePikminContainer" type="Node3D" parent="."]
+
+[node name="DevPikmin" parent="IdlePikminContainer" instance=ExtResource("2_l3mf0")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -12.3546)
 current_state = 2
-
-[node name="IdlePikminContainer" type="Node3D" parent="."]
 
 [node name="Melon" parent="." instance=ExtResource("7_ol4pb")]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1, 11.7945, -19.3381)

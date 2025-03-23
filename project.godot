@@ -109,6 +109,12 @@ whistle={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Player"
+3d_physics/layer_2="Pikmin"
+3d_physics/layer_3="Environment"
+
 [rendering]
 
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3

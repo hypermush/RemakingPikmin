@@ -70,6 +70,12 @@ func _physics_process(delta):
 
 		move_and_slide()
 
+func update_collision(state):
+	if state == State.THROWN:
+		collision_mask &= ~(1)
+	else:
+		collision_mask |= (1)
+
 # FOLLOWING state: Pikmin moves toward the target
 func follow_target(delta: float) -> void:
 	if target_follow_point:
@@ -90,7 +96,7 @@ func gathering_state(delta: float) -> void:
 
 func start_throw(origin_transform: Transform3D, direction: Vector3, reticle_distance: float):
 	current_state = State.THROWN  # <--- CRITICAL
-
+	update_collision(current_state)
 	# Get the target position (reticle's position)
 	var target_position = origin_transform.origin + direction * reticle_distance
 
@@ -122,4 +128,5 @@ func thrown_state_update(delta: float):
 	if is_on_floor():
 		# Transition back to WAITING or FOLLOWING, or do something else
 		current_state = State.WAITING
+		update_collision(current_state)
 		velocity = Vector3.ZERO

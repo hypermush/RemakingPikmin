@@ -11,6 +11,7 @@ material = SubResource("StandardMaterial3D_vl6tg")
 
 [node name="DevMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+visible = false
 cast_shadow = 0
 gi_mode = 0
 mesh = SubResource("SphereMesh_varp1")
