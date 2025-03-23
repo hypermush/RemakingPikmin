@@ -9,6 +9,9 @@ var _pikmin_list: Array = [] # List to track Pikmin
 @export var _idle_pikmin_container: Node3D
 @export var _squad_pikmin_container: Node3D
 
+@onready var whistle_mesh = $WhistleCollision/WhistleMesh
+@onready var whistle_collision = $WhistleCollision
+
 @onready var _follow_count := 0
 @export var follow_point: PackedScene # set in inspector
 @onready var follow_source: Node3D = %FollowSource
@@ -230,11 +233,34 @@ func dismiss_pikmin():
 				#Log.print("pikmin should now be idle")
 		_pikmin_list.clear()
 		update_pikmin_follow_targets()
-		
+
 func whistle_pikmin():
 	# whistle, b on controller, c on keyboard
-	if Input.is_action_just_pressed("whistle"):
-		Log.print("whistle")
+	if Input.is_action_pressed("whistle"):
+		whistle_collision.position = Vector3(reticle.position.x, whistle_collision.position.y, reticle.position.z)
+		whistle_mesh.visible = true
+		
+		# Check for Pikmin within the whistle area
+		var space_state = get_world_3d().direct_space_state
+		var query = PhysicsShapeQueryParameters3D.new()
+		query.set_shape(whistle_collision.shape)  # The collision shape for the whistle
+		
+		query.transform = whistle_collision.global_transform  # Set the query's position
+		query.collision_mask = 2  # Detect Pikmin layer (Layer 2)
+
+		var results = space_state.intersect_shape(query, 10)
+		for result in results:
+			var pikmin = result.collider
+			if pikmin and (pikmin.current_state == pikmin.State.WAITING or pikmin.current_state == pikmin.State.IDLE):
+				# Recruit Pikmin (same logic as recruitment collider)
+				pikmin.current_state = pikmin.State.FOLLOWING
+				_idle_pikmin_container.remove_child(pikmin)
+				_squad_pikmin_container.add_child(pikmin)
+				_pikmin_list.append(pikmin)
+				pikmin.player = _skin
+				update_pikmin_follow_targets()
+	else:
+		whistle_mesh.visible = false
 
 func add_follow_point():
 	_follow_count += 1
