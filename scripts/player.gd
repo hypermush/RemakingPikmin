@@ -18,15 +18,15 @@ var _pikmin_list: Array = [] # List to track Pikmin
 @export var _starter_squad_size := 12
 
 # follow layers
-var layers1 = [2, 4, 4, 2]
-var layers2 = [2, 4, 6, 6, 4, 2]
-var layers3 = [2, 6, 6, 8, 8, 6, 6, 2]
-var layers4 = [3, 7, 9, 9, 11, 11, 11, 9, 9, 7, 3]
-var layers5 = [4, 6, 8, 10, 12, 12, 12, 12, 10, 8, 6, 4]
-var squad_grid = layers1
-var last_known_count = 0
+var squad_layers = [
+	[2, 4, 4, 2],  # layers1
+	[2, 4, 6, 6, 4, 2],  # layers2
+	[2, 6, 6, 8, 8, 6, 6, 2],  # layers3
+	[3, 7, 9, 9, 11, 11, 11, 9, 9, 7, 3],  # layers4
+	[4, 6, 8, 10, 12, 12, 12, 12, 10, 8, 6, 4]  # layers5
+]
+var squad_formations = []
 var max_pikmin_count = 100  # Estimated upper limit
-var all_possible_positions = []
 
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
@@ -79,25 +79,31 @@ var move_input = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# camera setup
 	_camera_spring.spring_length = zoom_middle
 	_camera_pivot.rotation.x = angle_over_shoulder
 	_camera_input_direction = Vector2.ZERO
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)  # <-- Change this line
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)  # <-- Change this line before release
 	
+	# check for scene container references
 	if not _idle_pikmin_container:
 		Log.print("no idle container set")
 	if not _squad_pikmin_container:
 		Log.print("no squad container set")
-	
-	# starter squad size
-	for num in _starter_squad_size:
-		add_follow_point()
+		
+	# generate squad formations ahead of time
+	pre_generate_positions()
 
 func pre_generate_positions():
-	for i in range(max_pikmin_count):
-		# Generate positions ahead of time, storing them in a list
-		# This could be done once at the start of the game or on demand
-		pass
+	squad_formations.clear()  # Ensure we start fresh
+		# Ensure we have enough follow points
+	while _follow_count < max_pikmin_count:
+		add_follow_point()  # Create new follow points
+
+	for i in range(squad_layers.size()):
+		#Log.print("Generating squad layer:" + str(i))
+		var formation = generate_follow_positions(squad_layers[i])  # Generate once
+		squad_formations.append(formation)  # Store it in the matching index
 
 func _process(_delta):
 	move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
@@ -114,7 +120,7 @@ func _physics_process(delta: float) -> void:
 	dev_spawn_pikmin()
 	mouse_cursor_visible()
 	check_pikmin_recruitment()
-	
+
 func check_pikmin_recruitment():
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsShapeQueryParameters3D.new()
@@ -146,7 +152,7 @@ func toggle_camera_angle():
 		camera_angle_target = angle_birds_eye
 		_current_angle_enum = CameraAngles.birds_eye
 		Log.print("Camera Angle birds eye")
-	
+
 # toggle between three zoom levels
 func toggle_camera_zoom():
 	if camera_zoom_target == zoom_middle:
@@ -158,10 +164,10 @@ func toggle_camera_zoom():
 	elif camera_zoom_target == zoom_close:
 		camera_zoom_target = zoom_middle
 		Log.print("Camera Zoom Middle")
-		
+
 func set_interaction_zone(zone):
 	current_interaction_zone = zone
-	
+
 func spawn_pikmin():
 	if pikmin_scene:
 		var pikmin = pikmin_scene.instantiate()  # Create a new Pikmin instance
@@ -172,16 +178,12 @@ func spawn_pikmin():
 		
 		# Assign the player's target point and player reference
 		pikmin.player = _skin
-		
-		if _pikmin_list.size() > _follow_count:
-			#Log.print("new spot for new pikmin")
-			add_follow_point()
 			
 		update_pikmin_follow_targets()
-		
+
 func _unhandled_input(_event: InputEvent) -> void:
 	pass
-	
+
 # Helpers: ========================
 
 func player_movement(delta):
@@ -211,8 +213,8 @@ func player_movement(delta):
 		# anim idle
 
 func dev_spawn_pikmin(): # dev use, press p to spawn pikmin
-	if Input.is_action_just_pressed("spawn_pikmin"):
-		spawn_pikmin()	
+	if Input.is_action_just_pressed("spawn_pikmin") and _pikmin_list.size() < max_pikmin_count:
+		spawn_pikmin()
 
 func mouse_cursor_visible():	# get mouse back in order to close window (escape)	
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -268,30 +270,24 @@ func add_follow_point():
 	new_follow_point.name = "FollowPoint" + str(_follow_count)
 	new_follow_point.transform.origin = Vector3(0, 0, 1.0)
 	follow_source.add_child(new_follow_point)
-	
-	if _follow_count != last_known_count:
-		determine_grid()
-		last_known_count = _follow_count
 
-func determine_grid():
-	# multi grid based on follow count
-	if _follow_count < 13:
-		squad_grid = layers1
-	elif _follow_count >= 13 and _follow_count < 25:
-		squad_grid = layers2
-	elif _follow_count >= 25 and _follow_count < 45:
-		squad_grid = layers3
-	elif _follow_count >= 45 and _follow_count < 90:
-		squad_grid = layers4
-	elif _follow_count >= 90 and _follow_count < 101:
-		squad_grid = layers5
-	elif _follow_count >= 101:
-		Log.print("101+ is altogether too many  pikmin!")
-		return
-	generate_follow_positions(squad_grid)
+func determine_grid(pikmin_count: int) -> int:
+	#Log.print("Grid size is: " + str(pikmin_count))
+	if pikmin_count < 13:
+		return 0
+	elif pikmin_count < 25:
+		return 1
+	elif pikmin_count < 45:
+		return 2
+	elif pikmin_count < 90:
+		return 3
+	elif pikmin_count < 101:
+		return 4
+	else:
+		Log.print("101+ is too many Pikmin!")
+		return 4  # Use the largest grid by default
 
-func generate_follow_positions(current_squad_grid):
-	#Log.print("Generate Called with squad grid:" + str(squad_grid))
+func generate_follow_positions(current_squad_grid) -> Array:
 	var follow_positions = []
 	var row_z_offset = 0.5  # Distance between rows
 	
@@ -316,21 +312,27 @@ func generate_follow_positions(current_squad_grid):
 		# Add to final list
 		follow_positions.append_array(row_positions)
 
-	# Now apply positions to follow points
-	var follow_points = follow_source.get_children()
-	for i in range(min(follow_points.size(), follow_positions.size())):
-		follow_points[i].transform.origin = follow_positions[i]
+	return follow_positions
 
 func update_pikmin_follow_targets():
+	var current_index = determine_grid(_pikmin_list.size())  # Determine which formation to use
+	var follow_positions = squad_formations[current_index]  # Fetch precomputed formation
+
+	# Apply positions to follow points
 	var follow_points = follow_source.get_children()
 	
-	if _pikmin_list.is_empty() or follow_points.is_empty():
-		#Log.print("No Pikmin or follow points to assign!")
+	# Disable excess follow points
+	for i in range(follow_points.size()):
+		follow_points[i].visible = i < follow_positions.size()  # Show only needed points
+	
+	# Ensure there's no mismatch
+	if _pikmin_list.is_empty() or follow_positions.is_empty():
 		return
 		
-	for i in range(min(_pikmin_list.size(), follow_points.size())):
-		# Log.print("Assigning Pikmin " + str(i) + " to follow point " + str(follow_points[i].name))
-		_pikmin_list[i].target_follow_point = follow_points[i]  # Assign reference
+	# Assign Pikmin to follow points
+	for i in range(min(_pikmin_list.size(), follow_positions.size())):
+		follow_points[i].transform.origin = follow_positions[i]  # Move point to formation position
+		_pikmin_list[i].target_follow_point = follow_points[i]  # Assign follow targeterence
 
 func interact_call():
 	# interaction (A press)
@@ -356,7 +358,7 @@ func throw_pikmin():
 			pikmin.target_follow_point = null
 			_squad_pikmin_container.remove_child(pikmin)
 			_idle_pikmin_container.add_child(pikmin)
-			_pikmin_list.erase(pikmin)			
+			_pikmin_list.erase(pikmin)
 			break
 			
 	update_pikmin_follow_targets()
