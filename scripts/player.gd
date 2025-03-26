@@ -21,9 +21,12 @@ var _pikmin_list: Array = [] # List to track Pikmin
 var squad_layers = [
 	[2, 4, 4, 2],  # layers1
 	[2, 4, 6, 6, 4, 2],  # layers2
-	[2, 6, 6, 8, 8, 6, 6, 2],  # layers3
-	[3, 7, 9, 9, 11, 11, 11, 9, 9, 7, 3],  # layers4
-	[4, 6, 8, 10, 12, 12, 12, 12, 10, 8, 6, 4]  # layers5
+	[3, 5, 7, 7, 7, 5, 3], # layers3
+	[2, 6, 6, 8, 8, 6, 6, 2],  # layers4
+	[3, 5, 7, 9, 9, 9, 7, 5, 3], #layers5
+	[2, 6, 8, 8, 10, 10, 8, 8, 6, 2], #layer6
+	[3, 7, 9, 9, 11, 11, 11, 9, 9, 7, 3],  # layers7
+	[4, 6, 8, 10, 12, 12, 12, 12, 10, 8, 6, 4]  # layers8
 ]
 var squad_formations = []
 var max_pikmin_count = 100  # Estimated upper limit
@@ -272,20 +275,26 @@ func add_follow_point():
 	follow_source.add_child(new_follow_point)
 
 func determine_grid(pikmin_count: int) -> int:
-	#Log.print("Grid size is: " + str(pikmin_count))
+	Log.print("Grid size is: " + str(pikmin_count))
 	if pikmin_count < 13:
 		return 0
 	elif pikmin_count < 25:
 		return 1
-	elif pikmin_count < 45:
+	elif pikmin_count < 38:
 		return 2
-	elif pikmin_count < 90:
+	elif pikmin_count < 45:
 		return 3
-	elif pikmin_count < 101:
+	elif pikmin_count < 58:
 		return 4
+	elif pikmin_count < 69:
+		return 5
+	elif pikmin_count < 90:
+		return 6
+	elif pikmin_count < 101:
+		return 7
 	else:
 		Log.print("101+ is too many Pikmin!")
-		return 4  # Use the largest grid by default
+		return 7  # Use the largest grid by default
 
 func generate_follow_positions(current_squad_grid) -> Array:
 	var follow_positions = []
