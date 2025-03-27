@@ -15,7 +15,6 @@ var _pikmin_list: Array = [] # List to track Pikmin
 @onready var _follow_count := 0
 @export var follow_point: PackedScene # set in inspector
 @onready var follow_source: Node3D = %FollowSource
-@export var _starter_squad_size := 12
 
 # follow layers
 var squad_layers = [
@@ -30,6 +29,7 @@ var squad_layers = [
 ]
 var squad_formations = []
 var max_pikmin_count = 100  # Estimated upper limit
+var last_grid_index := -1
 
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
@@ -276,49 +276,57 @@ func add_follow_point():
 
 func determine_grid(pikmin_count: int) -> int:
 	Log.print("Grid size is: " + str(pikmin_count))
+	var index := 0
 	if pikmin_count < 13:
-		return 0
+		index = 0
 	elif pikmin_count < 25:
-		return 1
+		index = 1
 	elif pikmin_count < 38:
-		return 2
+		index = 2
 	elif pikmin_count < 45:
-		return 3
+		index = 3
 	elif pikmin_count < 58:
-		return 4
+		index = 4
 	elif pikmin_count < 69:
-		return 5
+		index = 5
 	elif pikmin_count < 90:
-		return 6
+		index = 6
 	elif pikmin_count < 101:
-		return 7
+		index = 7
 	else:
 		Log.print("101+ is too many Pikmin!")
-		return 7  # Use the largest grid by default
+		index = 7  # Use the largest grid by default
+	
+	# reroll the random offsets in the grid:
+	if index != last_grid_index:
+		squad_formations[index] = generate_follow_positions(squad_layers[index])
+		last_grid_index = index
+	
+	return index
 
 func generate_follow_positions(current_squad_grid) -> Array:
 	var follow_positions = []
 	var row_z_offset = 0.5  # Distance between rows
-	
+
 	for row in range(current_squad_grid.size()):
 		var num_in_row = current_squad_grid[row]
-		var row_z = row * row_z_offset  # Move row further back
-		var row_x_offset = 0.5  # Spacing between Pikmin
-		var row_width = (num_in_row - 1) * row_x_offset  # Total row width
-		var row_start_x = -row_width / 2  # Center row
+		var row_z = row * row_z_offset
+		var row_x_offset = 0.5
+		var row_width = (num_in_row - 1) * row_x_offset
+		var row_start_x = -row_width / 2
 
-		# Generate positions for this row
 		var row_positions = []
 		for i in range(num_in_row):
-			var x_pos = row_start_x + (i * row_x_offset)
-			var z_pos = row_z
+			# Add small random offset for more natural placement
+			var jitter_x = randf_range(-0.1, 0.1)
+			var jitter_z = randf_range(-0.1, 0.1)
+			var x_pos = row_start_x + (i * row_x_offset) + jitter_x
+			var z_pos = row_z + jitter_z
 			row_positions.append(Vector3(x_pos, 0, z_pos))
 
-		# Reverse row if it's an odd index
 		if row % 2 == 1:
 			row_positions.reverse()
 
-		# Add to final list
 		follow_positions.append_array(row_positions)
 
 	return follow_positions
