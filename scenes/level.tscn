@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=21 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://dtn0v6wjrvn3t" path="res://assets/models/the_s.s_dolphin/scene.gltf" id="4_h4sh7"]
 [ext_resource type="Texture2D" uid="uid://b7v8pag6jm2qx" path="res://assets/textures/tileable-s7002876-dark.png" id="6_mnfry"]
 [ext_resource type="PackedScene" uid="uid://raf5vb8lntpx" path="res://scenes/melon.tscn" id="7_ol4pb"]
+[ext_resource type="PackedScene" uid="uid://b3g2651hm7f70" path="res://scenes/carry_destination.tscn" id="7_qs0e1"]
+[ext_resource type="PackedScene" uid="uid://7l0kdkklib6k" path="res://scenes/carryable_item.tscn" id="10_jq5w6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l1rx6"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -30,9 +32,9 @@ albedo_texture = ExtResource("3_q4mh4")
 [sub_resource type="CylinderMesh" id="CylinderMesh_lhkm5"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_s4xlx"]
-vertices = PackedVector3Array(-212.975, 0.02, -212.975, -212.975, 0.02, 213.025, 213.025, 0.02, 213.025, 213.025, 0.02, -212.975)
+vertices = PackedVector3Array(-212.725, 0.5, -212.725, -212.725, 0.5, 212.775, 212.775, 0.5, 212.775, 212.775, 0.5, -212.725)
 polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
-cell_height = 0.01
+agent_radius = 0.6
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_voq8s"]
 size = Vector2(10, 10)
@@ -96,7 +98,7 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
 
 [node name="Plant6" type="MeshInstance3D" parent="Plants"]
-transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, -6.72835, 0.41074, 2.40808)
+transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, -11.1827, 0.41074, 2.40808)
 mesh = SubResource("PrismMesh_0u8ln")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
@@ -121,6 +123,9 @@ visible = false
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ship"]
 transform = Transform3D(2.25, 0, 0, 0, 4.44, 0, 0, 0, 4.415, 0, 5.76803, 0)
 mesh = SubResource("CylinderMesh_lhkm5")
+
+[node name="CarryDestination" parent="Ship" instance=ExtResource("7_qs0e1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.376074, 0, 3.04982)
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_s4xlx")
@@ -148,3 +153,8 @@ current_state = 2
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1, 11.7945, -19.3381)
 
 [node name="SquadPikminContainer" type="Node3D" parent="."]
+
+[node name="DevCarryable" parent="." node_paths=PackedStringArray("carry_destination") instance=ExtResource("10_jq5w6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.9599, 0.235426, -13.8016)
+weight = 9
+carry_destination = NodePath("../Ship/CarryDestination")

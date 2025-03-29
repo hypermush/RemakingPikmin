@@ -257,6 +257,8 @@ func whistle_pikmin():
 		for result in results:
 			var pikmin = result.collider
 			if pikmin and (pikmin.current_state == pikmin.State.WAITING or pikmin.current_state == pikmin.State.IDLE):
+				var state_name = pikmin.State.keys()[pikmin.current_state]
+				Log.print("Whistled Pikmin state before following: "+ str(state_name))
 				# Recruit Pikmin (same logic as recruitment collider)
 				pikmin.current_state = pikmin.State.FOLLOWING
 				_idle_pikmin_container.remove_child(pikmin)
@@ -275,7 +277,7 @@ func add_follow_point():
 	follow_source.add_child(new_follow_point)
 
 func determine_grid(pikmin_count: int) -> int:
-	Log.print("Grid size is: " + str(pikmin_count))
+	#Log.print("Grid size is: " + str(pikmin_count))
 	var index := 0
 	if pikmin_count < 13:
 		index = 0

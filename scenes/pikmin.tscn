@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dyk5qsdux6adt"]
+[gd_scene load_steps=6 format=3 uid="uid://dyk5qsdux6adt"]
 
 [ext_resource type="Script" path="res://scripts/pikmin.gd" id="1_80hys"]
 [ext_resource type="PackedScene" uid="uid://b4xucxw6wooxl" path="res://assets/models/red_pikmin/scene.gltf" id="3_uauue"]
@@ -7,6 +7,10 @@
 radius = 0.494446
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mgkp6"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_rmkdv"]
+height = 2.07726
+radius = 1.37366
 
 [node name="Pikmin" type="CharacterBody3D" groups=["pikmin"]]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
@@ -26,3 +30,9 @@ shape = SubResource("CapsuleShape3D_s5qit")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.975959, 0)
 mesh = SubResource("CapsuleMesh_mgkp6")
+
+[node name="DetectionRadius" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionRadius"]
+shape = SubResource("CylinderShape3D_rmkdv")

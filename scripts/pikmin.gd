@@ -11,8 +11,13 @@ enum State {
 	WAITING,
 	IDLE,
 	GATHERING,
-	THROWN
+	THROWN,
+	POSITIONING,
+	WORKING,
 }
+var assigned_carry_point: Node3D = null
+var carryable_target: Node3D = null
+@onready var _detection_area: Area3D = $DetectionRadius
 
 # Public references
 @onready var _navigation_agent: NavigationAgent3D = $NavigationAgent3D
@@ -31,7 +36,11 @@ func _ready():
 	_navigation_agent.avoidance_enabled = false  # Not sure if this results in more organic movement
 	_navigation_agent.path_desired_distance = 0.1  # Lower to allow finer control to the path
 	_navigation_agent.radius = 0.5  # Adjust radius if needed for the Pikmin's size
-	_navigation_agent.target_desired_distance = 0.01
+	_navigation_agent.target_desired_distance = 0.05
+	_navigation_agent.path_height_offset = 0.0
+	
+	# connect to signal for detection
+	_detection_area.area_entered.connect(_on_area_entered)
 	
 # Called every frame. Handles state transitions and movement
 func _process(delta: float) -> void:
@@ -50,24 +59,79 @@ func _process(delta: float) -> void:
 			gathering_state(delta)
 		State.THROWN:
 			thrown_state_update(delta)
+		State.POSITIONING:
+			positioning_state(delta)
 		
 func _physics_process(delta):
-	# If Pikmin is in THROWN state, handle ballistic arc and skip navigation
-	if current_state == State.THROWN:
-		thrown_state_update(delta)
-		return  # <--- stop here, so we don't run the navigation code at all
+	match current_state:
+		State.POSITIONING:
+			if assigned_carry_point:
+				var target = assigned_carry_point.global_transform.origin
+				target.y = global_transform.origin.y  # Optional: flatten to Y
 
-	# Ensure there's a valid target position
+				# Only update if needed
+				if _navigation_agent.get_target_position().distance_to(target) > 0.1:
+					target.y = 0.0
+					_navigation_agent.set_target_position(target)
+
+				if not _navigation_agent.is_navigation_finished():
+					var next_position = _navigation_agent.get_next_path_position()
+					var direction = (next_position - global_transform.origin).normalized()
+					velocity = direction * SPEED
+				else:
+					# ✅ Lock in: stop navigating and reparent
+					Log.print("Pikmin reached carry point!")
+					velocity = Vector3.ZERO
+					current_state = State.WORKING
+
+					# Save global transform (no scale/rotation changes)
+					var global_xform := global_transform
+
+					# Remove from squad container or idle container
+					if get_parent():
+						get_parent().remove_child(self)
+
+					# Add to object being carried (the carryable)
+					carryable_target.add_child(self)
+					
+					_navigation_agent.set_target_position(global_transform.origin)  # Clears nav path
+					_navigation_agent.set_velocity_forced(Vector3.ZERO)  # Stop nav steering
+					
+					snap_to_ground()
+
+					# ✅ Reapply original world transform (to avoid scale/stretch bugs)
+					set_global_transform(global_xform)
+
+					# Optional: align with the point visually (lock in)
+					global_transform.origin = assigned_carry_point.global_transform.origin
+					return
+					
+				move_and_slide()
+			return
+
+		State.THROWN:
+			thrown_state_update(delta)
+			return
+			
+		State.WORKING:
+			# Do nothing, fully frozen
+			velocity = Vector3.ZERO
+			return
+
+	# Default pathing for FOLLOWING etc.
 	if not _navigation_agent.is_navigation_finished():
 		var next_position = _navigation_agent.get_next_path_position()
 		var direction = (next_position - global_transform.origin).normalized()
 		var distance = global_transform.origin.distance_to(target_position)
 
-		if distance > 0.1:  # Allow small tolerance before stopping
+		if distance > 0.1:
 			velocity = direction * SPEED
 		else:
-			velocity = Vector3.ZERO  # Stop moving when close
-
+			velocity = Vector3.ZERO
+	else:
+		velocity = Vector3.ZERO  # ← add this to ensure no ghost sliding
+	
+	if velocity != Vector3.ZERO:
 		move_and_slide()
 
 func update_collision(state):
@@ -81,8 +145,16 @@ func update_collision(state):
 func follow_target(_delta: float) -> void:
 	if target_follow_point:
 		target_position = target_follow_point.global_transform.origin  # Direct access
+		target_position.y = 0.0
 		_navigation_agent.set_target_position(target_position)
 
+# POSITIONING state: Pikmin move to carry point and stay put
+func positioning_state(_delta: float) -> void:
+	pass
+	#if target_position:
+		##Log.print("moving to carry pos?")
+		#_navigation_agent.set_target_position(target_position)
+		
 # WAITING state: Pikmin waits, can implement more advanced logic like idle animations here
 func waiting_state(_delta: float) -> void:
 	pass  # Placeholder for any behavior when Pikmin are in the waiting state.
@@ -132,6 +204,44 @@ func thrown_state_update(delta: float):
 		# Transition back to WAITING or FOLLOWING, or do something else
 		current_state = State.WAITING
 		# ensure that the target pos is its current spot
+		target_position.y = 0.0
 		_navigation_agent.set_target_position(target_position)
 		update_collision(current_state)
 		velocity = Vector3.ZERO
+
+func _on_area_entered(area: Area3D):
+	#Log.print("Area entered: " + str(area.name))
+	if current_state in [State.POSITIONING, State.WORKING] or assigned_carry_point != null:
+		var state_name = State.keys()[current_state]
+		Log.print("non-carry state: " + state_name)
+		return
+	var item = area.get_parent()
+	if item.is_in_group("carryable"):
+		#Log.print("carryable interaction")
+		var point = item.get_available_carry_point(self)
+		if point:
+			target_position = point.global_transform.origin
+			#Log.print("Cached carry point position: " + str(target_position))
+			assigned_carry_point = point
+			carryable_target = item
+			current_state = State.POSITIONING
+			Log.print("Assigned carry point: " + str(assigned_carry_point))
+			#Log.print("Pikmin assigned to carry point!")
+
+func detach_from_carryable():
+	if assigned_carry_point and carryable_target:
+		carryable_target.release_carry_point(assigned_carry_point)
+		assigned_carry_point = null
+		carryable_target = null
+		
+func snap_to_ground():
+	var space_state = get_world_3d().direct_space_state
+
+	var ray_params := PhysicsRayQueryParameters3D.new()
+	ray_params.from = global_transform.origin + Vector3.UP * 1.0
+	ray_params.to = global_transform.origin + Vector3.DOWN * 5.0
+	ray_params.exclude = [self]
+
+	var result = space_state.intersect_ray(ray_params)
+	if result:
+		global_transform.origin.y = result.position.y

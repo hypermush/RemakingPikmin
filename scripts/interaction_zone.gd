@@ -52,13 +52,13 @@ func bodyEntered(body: Node3D):
 	if body.is_in_group("Player"):
 		body.current_interaction_zone = self  # Store reference to this zone
 		_uimesh.visible = true
-		Log.print("Player entered interaction zone.")
+		#Log.print("Player entered interaction zone.")
 		
 func bodyExited(body: Node3D):
 	if body.is_in_group("Player"):
 		body.current_interaction_zone = null  # Clear reference
 		_uimesh.visible = false
-		Log.print("Player left interaction zone.")
+		#Log.print("Player left interaction zone.")
 		
 func interact():
 	match interaction_type:

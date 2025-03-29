@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://7l0kdkklib6k"]
+
+[ext_resource type="Script" path="res://scripts/carryable_item.gd" id="1_dpyts"]
+[ext_resource type="PackedScene" uid="uid://c8ksn5ioatxkd" path="res://scenes/carry_point.tscn" id="2_xhcso"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_qb4xe"]
+height = 0.487224
+radius = 0.998215
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_yqv7c"]
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.5
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_cq5qp"]
+height = 0.566454
+radius = 1.50924
+
+[node name="DevCarryable" type="RigidBody3D"]
+collision_layer = 9
+script = ExtResource("1_dpyts")
+carry_point_scene = ExtResource("2_xhcso")
+
+[node name="ObjectCollision" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_qb4xe")
+
+[node name="DevPellet" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_yqv7c")
+skeleton = NodePath("../..")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="CarryPoints" type="Node3D" parent="."]
+
+[node name="CarryableArea" type="Area3D" parent="."]
+collision_layer = 9
+
+[node name="CarryableCollision" type="CollisionShape3D" parent="CarryableArea"]
+unique_name_in_owner = true
+shape = SubResource("CylinderShape3D_cq5qp")
