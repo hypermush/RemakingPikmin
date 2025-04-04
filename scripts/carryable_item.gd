@@ -14,7 +14,7 @@ var carry_points := []  # Will hold references to the spawned carry point nodes
 
 @onready var nav_agent := $NavigationAgent3D
 const MOVE_SPEED := 2.0  # Tune for how fast the object moves
-var _moving := false
+#var _moving := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -41,7 +41,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	pass
 	
-func _physics_process(delta):
+func _physics_process(_delta):
 	if lift >= weight and carry_destination:
 		if nav_agent.get_target_position() != carry_destination.global_transform.origin:
 			nav_agent.set_target_position(carry_destination.global_transform.origin)
@@ -72,10 +72,10 @@ func generate_carry_points():
 # Return the first unclaimed carry point and claim it
 func get_available_carry_point(pikmin: Node3D) -> Node3D:
 	if lift < weight:
-		Log.print("Attempting to find carry point...")
+		#Log.print("Attempting to find carry point...")
 		for point in carry_points:
 			if point.claim(pikmin):
-				Log.print("point claimed!")
+				#Log.print("point claimed!")
 				lift += 1
 				return point
 	Log.print("We have enough lift")
@@ -83,7 +83,7 @@ func get_available_carry_point(pikmin: Node3D) -> Node3D:
 
 func release_carry_point(point: Node3D):
 	if point:
-		Log.print("Releasing carry point: " + str(point.name))
+		#Log.print("Releasing carry point: " + str(point.name))
 		point.claimed = false
-		point.claiming_pikmin = null
+		point.assigned_pikmin = null
 		lift -= 1

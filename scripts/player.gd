@@ -266,6 +266,17 @@ func whistle_pikmin():
 				_pikmin_list.append(pikmin)
 				pikmin.player = _skin
 				update_pikmin_follow_targets()
+			elif pikmin and (pikmin.current_state == pikmin.State.WORKING):
+				#Log.print("Dude is working!")
+				# detach from carryable
+				pikmin.detach_from_carryable()
+				
+				# do other stuff to move them to player's group
+				pikmin.current_state = pikmin.State.FOLLOWING
+				_squad_pikmin_container.add_child(pikmin)
+				_pikmin_list.append(pikmin)
+				pikmin.player = _skin
+				update_pikmin_follow_targets()
 	else:
 		whistle_mesh.visible = false
 

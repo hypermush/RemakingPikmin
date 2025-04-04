@@ -80,7 +80,7 @@ func _physics_process(delta):
 					velocity = direction * SPEED
 				else:
 					# ✅ Lock in: stop navigating and reparent
-					Log.print("Pikmin reached carry point!")
+					#Log.print("Pikmin reached carry point!")
 					velocity = Vector3.ZERO
 					current_state = State.WORKING
 
@@ -211,9 +211,9 @@ func thrown_state_update(delta: float):
 
 func _on_area_entered(area: Area3D):
 	#Log.print("Area entered: " + str(area.name))
-	if current_state in [State.POSITIONING, State.WORKING] or assigned_carry_point != null:
-		var state_name = State.keys()[current_state]
-		Log.print("non-carry state: " + state_name)
+	if current_state in [State.POSITIONING, State.WORKING, State.FOLLOWING] or assigned_carry_point != null:
+		#var state_name = State.keys()[current_state]
+		#Log.print("non-carry state: " + state_name)
 		return
 	var item = area.get_parent()
 	if item.is_in_group("carryable"):
@@ -225,14 +225,24 @@ func _on_area_entered(area: Area3D):
 			assigned_carry_point = point
 			carryable_target = item
 			current_state = State.POSITIONING
-			Log.print("Assigned carry point: " + str(assigned_carry_point))
+			#Log.print("Assigned carry point: " + str(assigned_carry_point))
 			#Log.print("Pikmin assigned to carry point!")
 
 func detach_from_carryable():
 	if assigned_carry_point and carryable_target:
+		# Free up the carry point
 		carryable_target.release_carry_point(assigned_carry_point)
 		assigned_carry_point = null
+
+		# Save current world position
+		var xform := global_transform
+
+		# Reparent to idle or player container (you’ll do this outside this method)
+		carryable_target.remove_child(self)
 		carryable_target = null
+
+		# Reapply position
+		global_transform = xform
 		
 func snap_to_ground():
 	var space_state = get_world_3d().direct_space_state
