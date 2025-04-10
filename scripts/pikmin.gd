@@ -33,7 +33,7 @@ var target_position: Vector3  # The Pikmin's assigned spot in the zone
 const SPEED = 4.0
 
 func _ready():
-	_navigation_agent.avoidance_enabled = false  # Not sure if this results in more organic movement
+	_navigation_agent.avoidance_enabled = true  # Not sure if this results in more organic movement
 	_navigation_agent.path_desired_distance = 0.1  # Lower to allow finer control to the path
 	_navigation_agent.radius = 0.5  # Adjust radius if needed for the Pikmin's size
 	_navigation_agent.target_desired_distance = 0.05
