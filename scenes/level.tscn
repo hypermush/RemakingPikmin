@@ -195,6 +195,6 @@ transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1, 11
 [node name="SquadPikminContainer" type="Node3D" parent="."]
 
 [node name="DevCarryable" parent="." node_paths=PackedStringArray("carry_destination") instance=ExtResource("10_jq5w6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.7254, 0.235424, 1.91806)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.39121, 0.235424, -4.82122)
 weight = 5
 carry_destination = NodePath("../Ship/CarryDestination")

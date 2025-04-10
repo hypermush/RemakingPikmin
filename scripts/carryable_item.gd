@@ -1,11 +1,16 @@
 extends RigidBody3D
 
+signal reached_destination(payload: Dictionary)
+# examples
+# {"weight": weight} for onions
+
 @export var weight: int = 1  # How many Pikmin are needed
 var lift := 0 # this is how many are carrying 
 @export var carry_point_scene: PackedScene  # Drag a debug sphere or marker here
 @export var carry_radius: float = 1.0  # Distance from center to place points
 @export var carry_destination: Node3D
 var _carry_buffer := 0.3
+var _complete := false
 @onready var collision_shape: CollisionShape3D = %CarryableCollision
 
 @onready var carry_parent := $CarryPoints
@@ -36,24 +41,45 @@ func _ready() -> void:
 		Log.print("Warning: Collision shape is not a cylinder. Using default radius.")
 	
 	generate_carry_points()
+	
+	# connect to destination for signalling
+	connect("reached_destination", Callable(carry_destination, "_on_carryable_reached_destination"))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	pass
+	if _complete:
+		# time to wrap up
+		# release all points
+		for point in carry_points:
+			point.assigned_pikmin.detach_from_carryable()
+			# TODO
+			# what needs to happen here so the pikmin aren't deleted with the item is
+			# the stuff they do when they are whistled off a carryable
+			# mainly the reparenting stuff
+			# usually the player has handled that, but something else needs to handle it here
+			#release_carry_point(point)
+		# trigger event at destination
+		emit_signal("reached_destination", {"weight": weight})
+		Log.print("Signal emitted?")
+		# this actually deletes the item instantly, we'd want an animation or something later
+		queue_free()
 	
 func _physics_process(_delta):
-	if lift >= weight and carry_destination:
-		if nav_agent.get_target_position() != carry_destination.global_transform.origin:
-			nav_agent.set_target_position(carry_destination.global_transform.origin)
+	if not _complete:
+		if lift >= weight and carry_destination:
+			if nav_agent.get_target_position() != carry_destination.global_transform.origin:
+				nav_agent.set_target_position(carry_destination.global_transform.origin)
 
-		if not nav_agent.is_navigation_finished():
-			var next_position = nav_agent.get_next_path_position()
-			var direction = (next_position - global_transform.origin).normalized()
-			linear_velocity = direction * MOVE_SPEED
+			if not nav_agent.is_navigation_finished():
+				var next_position = nav_agent.get_next_path_position()
+				var direction = (next_position - global_transform.origin).normalized()
+				linear_velocity = direction * MOVE_SPEED
+			else:
+				linear_velocity = Vector3.ZERO
+				# nav finished
+				_complete = true
 		else:
 			linear_velocity = Vector3.ZERO
-	else:
-		linear_velocity = Vector3.ZERO
 
 func generate_carry_points():
 	carry_points.clear()

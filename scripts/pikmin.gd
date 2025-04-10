@@ -230,6 +230,7 @@ func _on_area_entered(area: Area3D):
 
 func detach_from_carryable():
 	if assigned_carry_point and carryable_target:
+		Log.print("Releasing a pikmin?")
 		# Free up the carry point
 		carryable_target.release_carry_point(assigned_carry_point)
 		assigned_carry_point = null

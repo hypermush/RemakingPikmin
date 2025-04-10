@@ -14,8 +14,7 @@ enum DestinationType {
 func _ready() -> void:
 	if not destination_type:
 		Log.print("Destination is missing type!")
-	pass # Replace with function body.
-
+	#connect("reached_destination", Callable(self, "_on_carryable_reached_destination"))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -23,3 +22,9 @@ func _process(_delta: float) -> void:
 	
 func get_dropoff_position():
 	return dropoff_point.global_transform.origin
+	
+func _on_carryable_reached_destination(payload: Dictionary):
+	Log.print("Final call of destination reached!")
+	if payload.has("weight"):
+		var pikmin_to_spawn = payload["weight"]
+		# spawn_pikmin(pikmin_to_spawn)
