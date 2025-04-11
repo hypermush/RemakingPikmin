@@ -48,16 +48,13 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	if _complete:
-		# time to wrap up
-		# release all points
+		var current_pikmin
 		for point in carry_points:
-			point.assigned_pikmin.detach_from_carryable()
-			# TODO
-			# what needs to happen here so the pikmin aren't deleted with the item is
-			# the stuff they do when they are whistled off a carryable
-			# mainly the reparenting stuff
-			# usually the player has handled that, but something else needs to handle it here
-			#release_carry_point(point)
+			current_pikmin = point.assigned_pikmin
+			if current_pikmin:
+				current_pikmin.detach_from_carryable()
+			if current_pikmin.player and current_pikmin.player.has_method("add_pikmin_to_idle"):
+				current_pikmin.player.add_pikmin_to_idle(current_pikmin)
 		# trigger event at destination
 		emit_signal("reached_destination", {"weight": weight})
 		Log.print("Signal emitted?")

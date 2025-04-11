@@ -244,6 +244,7 @@ func detach_from_carryable():
 
 		# Reapply position
 		global_transform = xform
+		current_state = State.IDLE
 		
 func snap_to_ground():
 	var space_state = get_world_3d().direct_space_state

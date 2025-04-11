@@ -141,9 +141,18 @@ func check_pikmin_recruitment():
 			_idle_pikmin_container.remove_child(pikmin)
 			_squad_pikmin_container.add_child(pikmin)
 			_pikmin_list.append(pikmin)
-			pikmin.player = _skin
+			pikmin.player = self
 			update_pikmin_follow_targets()
 			#Log.print("Pikmin Collision, Following?")
+
+func add_pikmin_to_idle(pikmin: Node3D):
+	if _idle_pikmin_container:
+		_idle_pikmin_container.add_child(pikmin)
+		pikmin.player = self  # Reset in case it was unset
+	pikmin.target_position = pikmin.global_transform.origin
+	pikmin.current_state = pikmin.State.IDLE
+	pikmin.velocity = Vector3.ZERO
+	pikmin._navigation_agent.set_target_position(pikmin.target_position)
 
 # toggle between over the shoulder and bird's eye view
 func toggle_camera_angle():
@@ -180,7 +189,7 @@ func spawn_pikmin():
 		#Log.print("Making a pikmin at " + str(_debug_spawn.global_transform.origin))
 		
 		# Assign the player's target point and player reference
-		pikmin.player = _skin
+		pikmin.player = self
 			
 		update_pikmin_follow_targets()
 
@@ -264,7 +273,7 @@ func whistle_pikmin():
 				_idle_pikmin_container.remove_child(pikmin)
 				_squad_pikmin_container.add_child(pikmin)
 				_pikmin_list.append(pikmin)
-				pikmin.player = _skin
+				pikmin.player = self
 				update_pikmin_follow_targets()
 			elif pikmin and (pikmin.current_state == pikmin.State.WORKING):
 				#Log.print("Dude is working!")
@@ -275,7 +284,7 @@ func whistle_pikmin():
 				pikmin.current_state = pikmin.State.FOLLOWING
 				_squad_pikmin_container.add_child(pikmin)
 				_pikmin_list.append(pikmin)
-				pikmin.player = _skin
+				pikmin.player = self
 				update_pikmin_follow_targets()
 	else:
 		whistle_mesh.visible = false
