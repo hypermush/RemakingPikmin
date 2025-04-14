@@ -24,7 +24,7 @@ func get_dropoff_position():
 	return dropoff_point.global_transform.origin
 	
 func _on_carryable_reached_destination(payload: Dictionary):
-	Log.print("Final call of destination reached!")
+	#Log.print("Final call of destination reached!")
 	if payload.has("weight"):
 		var pikmin_to_spawn = payload["weight"]
 		# spawn_pikmin(pikmin_to_spawn)

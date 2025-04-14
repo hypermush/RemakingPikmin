@@ -267,7 +267,7 @@ func whistle_pikmin():
 			var pikmin = result.collider
 			if pikmin and (pikmin.current_state == pikmin.State.WAITING or pikmin.current_state == pikmin.State.IDLE):
 				var state_name = pikmin.State.keys()[pikmin.current_state]
-				Log.print("Whistled Pikmin state before following: "+ str(state_name))
+				# Log.print("Whistled Pikmin state before following: "+ str(state_name))
 				# Recruit Pikmin (same logic as recruitment collider)
 				pikmin.current_state = pikmin.State.FOLLOWING
 				_idle_pikmin_container.remove_child(pikmin)

@@ -36,7 +36,7 @@ func _ready() -> void:
 	if collision_shape.shape is CylinderShape3D:
 		var cylinder_shape := collision_shape.shape as CylinderShape3D
 		carry_radius = cylinder_shape.radius + _carry_buffer  # Add a small buffer
-		Log.print("Carry radius set to: " + str(carry_radius))
+		#Log.print("Carry radius set to: " + str(carry_radius))
 	else:
 		Log.print("Warning: Collision shape is not a cylinder. Using default radius.")
 	
@@ -57,7 +57,7 @@ func _process(_delta: float) -> void:
 				current_pikmin.player.add_pikmin_to_idle(current_pikmin)
 		# trigger event at destination
 		emit_signal("reached_destination", {"weight": weight})
-		Log.print("Signal emitted?")
+		#Log.print("Signal emitted?")
 		# this actually deletes the item instantly, we'd want an animation or something later
 		queue_free()
 	
@@ -80,7 +80,7 @@ func _physics_process(_delta):
 
 func generate_carry_points():
 	carry_points.clear()
-	Log.print("Generating carry points for weight: " + str(weight)) 
+	#Log.print("Generating carry points for weight: " + str(weight)) 
 	for i in range(weight):
 		var angle = (TAU / weight) * i  # Evenly spaced in a circle
 		var x = cos(angle) * carry_radius
