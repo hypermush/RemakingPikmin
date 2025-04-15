@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://x0f6skrphdbu"]
+[gd_scene load_steps=12 format=3 uid="uid://x0f6skrphdbu"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_0nf4c"]
 [ext_resource type="PackedScene" uid="uid://pbrgnkxxnb4d" path="res://assets/models/captain_olimar/scene.gltf" id="2_7mkht"]
@@ -14,7 +14,7 @@ points = PackedVector3Array(-0.125207, -0.532801, -0.480507, 0.0227831, 0.47607,
 [sub_resource type="SphereShape3D" id="SphereShape3D_jouno"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_4o260"]
-radius = 0.875
+radius = 1.24118
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_b48de"]
 height = 0.457548
@@ -26,6 +26,10 @@ albedo_color = Color(1, 0.145098, 1, 0.141176)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_3r5jl"]
 material = SubResource("StandardMaterial3D_qmkms")
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_kewni"]
+height = 0.734492
+radius = 1.55111
 
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -80,3 +84,6 @@ disabled = true
 transform = Transform3D(5, 0, 0, 0, 0.205, 0, 0, 0, 5, 0, 0, 0)
 visible = false
 mesh = SubResource("CylinderMesh_3r5jl")
+
+[node name="InteractionArea" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_kewni")

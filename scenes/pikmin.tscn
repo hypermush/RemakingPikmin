@@ -1,35 +1,44 @@
-[gd_scene load_steps=6 format=3 uid="uid://dyk5qsdux6adt"]
+[gd_scene load_steps=7 format=3 uid="uid://dyk5qsdux6adt"]
 
 [ext_resource type="Script" path="res://scripts/pikmin.gd" id="1_80hys"]
-[ext_resource type="PackedScene" uid="uid://b4xucxw6wooxl" path="res://assets/models/red_pikmin/scene.gltf" id="3_uauue"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s5qit"]
-radius = 0.494446
+radius = 0.254271
+height = 1.06305
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mgkp6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_csbiu"]
+albedo_color = Color(0.176471, 1, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_or151"]
+material = SubResource("StandardMaterial3D_csbiu")
+top_radius = 0.0
+bottom_radius = 0.1
+height = 0.378
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_rmkdv"]
 height = 2.07726
 radius = 1.37366
 
 [node name="Pikmin" type="CharacterBody3D" groups=["pikmin"]]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_80hys")
 
-[node name="Sketchfab_Scene" parent="." instance=ExtResource("3_uauue")]
-transform = Transform3D(-40.655, 0, -3.55417e-06, 0, 40.655, 0, 3.55417e-06, 0, -40.655, 0, 0.677827, -0.0714)
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.53303, 0)
 shape = SubResource("CapsuleShape3D_s5qit")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.975959, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.508989, 0)
 mesh = SubResource("CapsuleMesh_mgkp6")
+
+[node name="Leaf" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, 4.53578e-08, -7.47356e-08, 0, 0.854876, 0.518833, 8.74228e-08, 0.518833, -0.854876, 0, 1.09044, 0.204166)
+mesh = SubResource("CylinderMesh_or151")
 
 [node name="DetectionRadius" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

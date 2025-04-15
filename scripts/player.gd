@@ -153,7 +153,15 @@ func add_pikmin_to_idle(pikmin: Node3D):
 	pikmin.current_state = pikmin.State.IDLE
 	pikmin.velocity = Vector3.ZERO
 	pikmin._navigation_agent.set_target_position(pikmin.target_position)
-
+	
+func add_pikmin_to_squad(pikmin: Node3D):
+	if _squad_pikmin_container:
+		_squad_pikmin_container.add_child(pikmin)
+		_pikmin_list.append(pikmin)
+		pikmin.player = self
+		pikmin.current_state = pikmin.State.FOLLOWING
+		update_pikmin_follow_targets()
+	
 # toggle between over the shoulder and bird's eye view
 func toggle_camera_angle():
 	if _current_angle_enum == CameraAngles.birds_eye:
@@ -374,13 +382,24 @@ func update_pikmin_follow_targets():
 		_pikmin_list[i].target_follow_point = follow_points[i]  # Assign follow targeterence
 
 func interact_call():
-	# interaction (A press)
 	if Input.is_action_just_pressed("interact"):
 		if current_interaction_zone:
-			# Call a function on the zone to handle interaction
 			current_interaction_zone.interact()
 		else:
-			Log.print("No interaction available.")
+			# No zone — look for seeds to pluck
+			var space_state = get_world_3d().direct_space_state
+			var query = PhysicsShapeQueryParameters3D.new()
+			query.set_shape($InteractionArea.shape)
+			query.transform = $InteractionArea.global_transform
+			query.collision_mask = 16  # Use a new layer just for seeds
+
+			var results = space_state.intersect_shape(query, 10)
+			Log.print("Seeds found: " + str(results.size()))
+			for result in results:
+				var seed = result.collider
+				if seed and seed.has_method("pluck"):
+					seed.pluck()
+					return  # Only pluck one seed at a time
 
 func throw():
 	if Input.is_action_just_pressed("left_click"):
