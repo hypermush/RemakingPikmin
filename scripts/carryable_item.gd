@@ -48,6 +48,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	if _complete:
+		#Log.print("Reached destination?")
 		var current_pikmin
 		for point in carry_points:
 			current_pikmin = point.assigned_pikmin

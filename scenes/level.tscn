@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://raf5vb8lntpx" path="res://scenes/melon.tscn" id="7_ol4pb"]
 [ext_resource type="PackedScene" uid="uid://b3g2651hm7f70" path="res://scenes/carry_destination.tscn" id="7_qs0e1"]
 [ext_resource type="PackedScene" uid="uid://7l0kdkklib6k" path="res://scenes/carryable_item.tscn" id="10_jq5w6"]
-[ext_resource type="Script" path="res://scripts/seed.gd" id="11_xr1yf"]
+[ext_resource type="PackedScene" uid="uid://4csjdrh06ih2" path="res://scenes/seed.tscn" id="11_h0ypw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l1rx6"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -61,17 +61,16 @@ height = 4.265
 [sub_resource type="BoxMesh" id="BoxMesh_8b4yu"]
 size = Vector3(21.08, 5.03, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hig8g"]
-albedo_color = Color(0.203922, 1, 0.117647, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b1r2o"]
+albedo_color = Color(0.796078, 0.219608, 0.121569, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_0x22v"]
-material = SubResource("StandardMaterial3D_hig8g")
-top_radius = 0.0
-bottom_radius = 0.1
-height = 0.5
+[sub_resource type="SphereMesh" id="SphereMesh_1ygib"]
+material = SubResource("StandardMaterial3D_b1r2o")
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_57w63"]
-radius = 1.22514
+[sub_resource type="CylinderMesh" id="CylinderMesh_m01mc"]
+top_radius = 0.2
+bottom_radius = 0.2
+height = 6.0
 
 [node name="World" type="Node3D"]
 
@@ -83,7 +82,7 @@ transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75
 shadow_enabled = true
 
 [node name="Player" parent="." node_paths=PackedStringArray("_idle_pikmin_container", "_squad_pikmin_container") instance=ExtResource("1_ihxn3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.918456, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.71764, 0.918456, -5.6682)
 top_level = true
 pikmin_scene = ExtResource("2_l3mf0")
 _idle_pikmin_container = NodePath("../IdlePikminContainer")
@@ -99,7 +98,7 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
 
 [node name="Plant2" type="MeshInstance3D" parent="Plants"]
-transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, 0, 0.41074, 1.63019)
+transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, 1.10969, 0.41074, 4.28334)
 mesh = SubResource("PrismMesh_0u8ln")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
@@ -203,26 +202,50 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12.3546)
 current_state = 2
 
 [node name="Melon" parent="." instance=ExtResource("7_ol4pb")]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1, 11.7945, -19.3381)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -46.0691, 11.7945, -91.0211)
 
 [node name="SquadPikminContainer" type="Node3D" parent="."]
 
 [node name="DevCarryable" parent="." node_paths=PackedStringArray("carry_destination") instance=ExtResource("10_jq5w6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.55, 0.235424, 1.87735)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.7804, 0.643929, -7.00512)
 weight = 5
-carry_destination = NodePath("../Ship/CarryDestination")
+carry_destination = NodePath("../DevOnion/OnionCarryDestination")
 
-[node name="DevSeed" type="StaticBody3D" parent="." node_paths=PackedStringArray("player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.86021, 0, -13.613)
-collision_layer = 16
-script = ExtResource("11_xr1yf")
-pikmin_scene = ExtResource("2_l3mf0")
-player = NodePath("../Player")
+[node name="DevSeeds" type="Node3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="DevSeed"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.218396, 0)
-layers = 17
-mesh = SubResource("CylinderMesh_0x22v")
+[node name="DevSeed" parent="DevSeeds" node_paths=PackedStringArray("player") instance=ExtResource("11_h0ypw")]
+player = NodePath("../../Player")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DevSeed"]
-shape = SubResource("SphereShape3D_57w63")
+[node name="DevSeed2" parent="DevSeeds" node_paths=PackedStringArray("player") instance=ExtResource("11_h0ypw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.35542, 0, -13.3748)
+player = NodePath("../../Player")
+
+[node name="DevSeed3" parent="DevSeeds" node_paths=PackedStringArray("player") instance=ExtResource("11_h0ypw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.92134, 0, -13.3659)
+player = NodePath("../../Player")
+
+[node name="DevSeed4" parent="DevSeeds" node_paths=PackedStringArray("player") instance=ExtResource("11_h0ypw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.20372, 0, -14.1028)
+player = NodePath("../../Player")
+
+[node name="DevOnion" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.00956, 0, -22.9052)
+
+[node name="Sphere" type="MeshInstance3D" parent="DevOnion"]
+transform = Transform3D(3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 5, 0)
+mesh = SubResource("SphereMesh_1ygib")
+
+[node name="Leg" type="MeshInstance3D" parent="DevOnion"]
+transform = Transform3D(0.911927, 0.410353, 0, -0.410353, 0.911927, 0, 0, 0, 1, -2.19448, 2.71356, 0.0854778)
+mesh = SubResource("CylinderMesh_m01mc")
+
+[node name="Leg2" type="MeshInstance3D" parent="DevOnion"]
+transform = Transform3D(-0.505236, -0.227348, -0.832496, -0.410353, 0.911927, 0, 0.759175, 0.341617, -0.554031, 1.38144, 2.71356, -1.92385)
+mesh = SubResource("CylinderMesh_m01mc")
+
+[node name="Leg3" type="MeshInstance3D" parent="DevOnion"]
+transform = Transform3D(-0.647234, -0.291245, 0.704461, -0.410353, 0.911927, 2.89166e-08, -0.642417, -0.289078, -0.709743, 1.61983, 2.71356, 1.5499)
+mesh = SubResource("CylinderMesh_m01mc")
+
+[node name="OnionCarryDestination" parent="DevOnion" instance=ExtResource("7_qs0e1")]
+destination_type = 1

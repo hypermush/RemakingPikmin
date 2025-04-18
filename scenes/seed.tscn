@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://4csjdrh06ih2"]
+
+[ext_resource type="Script" path="res://scripts/seed.gd" id="1_wsoyx"]
+[ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_wsbcj"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hig8g"]
+albedo_color = Color(0.203922, 1, 0.117647, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0x22v"]
+material = SubResource("StandardMaterial3D_hig8g")
+top_radius = 0.0
+bottom_radius = 0.1
+height = 0.5
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_57w63"]
+radius = 1.22514
+
+[node name="DevSeed" type="StaticBody3D" node_paths=PackedStringArray("player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.86021, 0, -13.613)
+collision_layer = 16
+script = ExtResource("1_wsoyx")
+pikmin_scene = ExtResource("2_wsbcj")
+player = NodePath("")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.218396, 0)
+layers = 17
+mesh = SubResource("CylinderMesh_0x22v")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_57w63")
