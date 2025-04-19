@@ -274,7 +274,7 @@ func whistle_pikmin():
 		for result in results:
 			var pikmin = result.collider
 			if pikmin and (pikmin.current_state == pikmin.State.WAITING or pikmin.current_state == pikmin.State.IDLE):
-				var state_name = pikmin.State.keys()[pikmin.current_state]
+				#var state_name = pikmin.State.keys()[pikmin.current_state]
 				# Log.print("Whistled Pikmin state before following: "+ str(state_name))
 				# Recruit Pikmin (same logic as recruitment collider)
 				pikmin.current_state = pikmin.State.FOLLOWING
@@ -394,11 +394,11 @@ func interact_call():
 			query.collision_mask = 16  # Use a new layer just for seeds
 
 			var results = space_state.intersect_shape(query, 10)
-			Log.print("Seeds found: " + str(results.size()))
+			#Log.print("Seeds found: " + str(results.size()))
 			for result in results:
-				var seed = result.collider
-				if seed and seed.has_method("pluck"):
-					seed.pluck()
+				var current_seed = result.collider
+				if current_seed and current_seed.has_method("pluck"):
+					current_seed.pluck()
 					return  # Only pluck one seed at a time
 
 func throw():

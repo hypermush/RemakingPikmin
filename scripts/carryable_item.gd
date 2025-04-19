@@ -5,6 +5,7 @@ signal reached_destination(payload: Dictionary)
 # {"weight": weight} for onions
 
 @export var weight: int = 1  # How many Pikmin are needed
+@export var value: int = 5 # how many Pikmin are made from this
 var lift := 0 # this is how many are carrying 
 @export var carry_point_scene: PackedScene  # Drag a debug sphere or marker here
 @export var carry_radius: float = 1.0  # Distance from center to place points
@@ -57,7 +58,7 @@ func _process(_delta: float) -> void:
 			if current_pikmin.player and current_pikmin.player.has_method("add_pikmin_to_idle"):
 				current_pikmin.player.add_pikmin_to_idle(current_pikmin)
 		# trigger event at destination
-		emit_signal("reached_destination", {"weight": weight})
+		emit_signal("reached_destination", {"value": value})
 		#Log.print("Signal emitted?")
 		# this actually deletes the item instantly, we'd want an animation or something later
 		queue_free()

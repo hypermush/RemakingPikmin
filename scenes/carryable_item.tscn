@@ -22,6 +22,7 @@ height = 0.566454
 radius = 1.50924
 
 [node name="DevCarryable" type="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.279262, 0)
 collision_layer = 9
 script = ExtResource("1_dpyts")
 carry_point_scene = ExtResource("2_xhcso")
@@ -36,6 +37,7 @@ skeleton = NodePath("../..")
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 
 [node name="CarryPoints" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.243612, 0)
 
 [node name="CarryableArea" type="Area3D" parent="."]
 collision_layer = 9

@@ -24,7 +24,7 @@ bottom_radius = 0.1
 height = 0.378
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_rmkdv"]
-height = 2.07726
+height = 1.95818
 radius = 1.37366
 
 [node name="Pikmin" type="CharacterBody3D" groups=["pikmin"]]
