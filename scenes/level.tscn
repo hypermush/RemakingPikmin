@@ -3,9 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
 [ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://scenes/interaction_zone.tscn" id="3_o5ufs"]
-[ext_resource type="Texture2D" uid="uid://fdjhd156jl8n" path="res://assets/textures/stone-1024.jpg" id="3_q4mh4"]
 [ext_resource type="PackedScene" uid="uid://c5kgw5m1gsrvt" path="res://scenes/follow_point.tscn" id="3_wc42g"]
-[ext_resource type="PackedScene" uid="uid://dtn0v6wjrvn3t" path="res://assets/models/the_s.s_dolphin/scene.gltf" id="4_h4sh7"]
 [ext_resource type="Texture2D" uid="uid://b7v8pag6jm2qx" path="res://assets/textures/tileable-s7002876-dark.png" id="6_mnfry"]
 [ext_resource type="PackedScene" uid="uid://raf5vb8lntpx" path="res://scenes/melon.tscn" id="7_ol4pb"]
 [ext_resource type="PackedScene" uid="uid://b3g2651hm7f70" path="res://scenes/carry_destination.tscn" id="7_qs0e1"]
@@ -24,11 +22,6 @@ background_mode = 2
 sky = SubResource("Sky_ycq45")
 tonemap_mode = 2
 glow_enabled = true
-
-[sub_resource type="PrismMesh" id="PrismMesh_0u8ln"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0jfar"]
-albedo_texture = ExtResource("3_q4mh4")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lhkm5"]
 
@@ -54,7 +47,24 @@ data = PackedVector3Array(5, 0, 5, -5, 0, 5, 5, 0, -5, -5, 0, 5, -5, 0, -5, 5, 0
 [sub_resource type="BoxMesh" id="BoxMesh_nq8m0"]
 size = Vector3(9.45, 5.03, 1)
 
+[sub_resource type="Gradient" id="Gradient_og34f"]
+colors = PackedColorArray(0.28561, 0.148133, 0.0037799, 1, 0.741828, 0.507204, 0.284453, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kwexh"]
+noise_type = 3
+seed = 14
+frequency = 0.0356
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_86anf"]
+color_ramp = SubResource("Gradient_og34f")
+noise = SubResource("FastNoiseLite_kwexh")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ntvv6"]
+albedo_texture = SubResource("NoiseTexture2D_86anf")
+roughness = 0.97
+
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vim0u"]
+material = SubResource("StandardMaterial3D_ntvv6")
 radius = 1.336
 height = 4.265
 
@@ -91,42 +101,6 @@ follow_point = ExtResource("3_wc42g")
 
 [node name="Plants" type="Node" parent="."]
 
-[node name="Plant" type="MeshInstance3D" parent="Plants"]
-transform = Transform3D(-1, -8.72533e-08, -5.44212e-09, 0, -0.0622506, 0.998061, -8.74228e-08, 0.998061, 0.0622506, 0, 0.41074, 4.41044)
-mesh = SubResource("PrismMesh_0u8ln")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
-
-[node name="Plant2" type="MeshInstance3D" parent="Plants"]
-transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, 1.10969, 0.41074, 4.28334)
-mesh = SubResource("PrismMesh_0u8ln")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
-
-[node name="Plant3" type="MeshInstance3D" parent="Plants"]
-transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, 5.80532, 0.41074, -1.85997)
-mesh = SubResource("PrismMesh_0u8ln")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
-
-[node name="Plant4" type="MeshInstance3D" parent="Plants"]
-transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, 5.80532, 0.41074, -6.57278)
-mesh = SubResource("PrismMesh_0u8ln")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
-
-[node name="Plant5" type="MeshInstance3D" parent="Plants"]
-transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, -6.72835, 0.41074, -6.57278)
-mesh = SubResource("PrismMesh_0u8ln")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
-
-[node name="Plant6" type="MeshInstance3D" parent="Plants"]
-transform = Transform3D(1, 0, 0, 0, -0.0622506, 0.998061, 0, -0.998061, -0.0622506, -11.1827, 0.41074, 2.40808)
-mesh = SubResource("PrismMesh_0u8ln")
-skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_0jfar")
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, -8.33596e-08, -0.301322, 0.953523, -2.63424e-08, 0.953523, 0.301322, 0, 16.1193, 0)
 
@@ -139,10 +113,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.02829, 0, -0.512918)
 
 [node name="Ship" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.56566, 0, -1.77127)
-
-[node name="Sketchfab_Scene" parent="Ship" instance=ExtResource("4_h4sh7")]
-transform = Transform3D(0.592238, 0, 0.805763, 0, 1, 0, -0.805763, 0, 0.592238, -5.41088, 0, 0)
-visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ship"]
 transform = Transform3D(2.25, 0, 0, 0, 4.44, 0, 0, 0, 4.415, 0, 5.76803, 0)

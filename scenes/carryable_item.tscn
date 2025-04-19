@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://7l0kdkklib6k"]
+[gd_scene load_steps=7 format=3 uid="uid://7l0kdkklib6k"]
 
 [ext_resource type="Script" path="res://scripts/carryable_item.gd" id="1_dpyts"]
 [ext_resource type="PackedScene" uid="uid://c8ksn5ioatxkd" path="res://scenes/carry_point.tscn" id="2_xhcso"]
@@ -7,7 +7,12 @@
 height = 0.487224
 radius = 0.998215
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsevg"]
+albedo_color = Color(1, 0.34902, 1, 1)
+roughness = 0.35
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_yqv7c"]
+material = SubResource("StandardMaterial3D_hsevg")
 top_radius = 1.0
 bottom_radius = 1.0
 height = 0.5

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dyk5qsdux6adt"]
+[gd_scene load_steps=8 format=3 uid="uid://dyk5qsdux6adt"]
 
 [ext_resource type="Script" path="res://scripts/pikmin.gd" id="1_80hys"]
 
@@ -6,10 +6,16 @@
 radius = 0.254271
 height = 1.06305
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bib30"]
+albedo_color = Color(1, 0.0666667, 0.0705882, 1)
+roughness = 0.45
+
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mgkp6"]
+material = SubResource("StandardMaterial3D_bib30")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_csbiu"]
 albedo_color = Color(0.176471, 1, 0, 1)
+roughness = 0.9
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_or151"]
 material = SubResource("StandardMaterial3D_csbiu")
