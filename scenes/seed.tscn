@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://4csjdrh06ih2"]
+[gd_scene load_steps=15 format=3 uid="uid://4csjdrh06ih2"]
 
 [ext_resource type="Script" path="res://scripts/seed.gd" id="1_wsoyx"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_wsbcj"]
@@ -25,6 +25,29 @@ material = SubResource("StandardMaterial3D_sakjf")
 radius = 0.2
 height = 0.5
 
+[sub_resource type="Curve" id="Curve_rq1r7"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_pw6l3"]
+curve = SubResource("Curve_rq1r7")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yqt8k"]
+angle_min = 1.07288e-05
+angle_max = 1.07288e-05
+initial_velocity_min = 1.5
+initial_velocity_max = 3.0
+scale_min = 0.5
+scale_curve = SubResource("CurveTexture_pw6l3")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ctw0n"]
+albedo_color = Color(0.295296, 0.295174, 0.210692, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_h344b"]
+material = SubResource("StandardMaterial3D_ctw0n")
+
+[sub_resource type="Skin" id="Skin_c46v1"]
+
 [node name="DevSeed" type="RigidBody3D"]
 collision_layer = 16
 collision_mask = 4
@@ -49,3 +72,14 @@ shape = SubResource("SphereShape3D_evjfh")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0581229, 0)
 mesh = SubResource("SphereMesh_cfl2m")
+
+[node name="PoofParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 10
+lifetime = 0.2
+one_shot = true
+explosiveness = 1.0
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_yqt8k")
+draw_pass_1 = SubResource("QuadMesh_h344b")
+draw_skin = SubResource("Skin_c46v1")

@@ -4,6 +4,7 @@ extends RigidBody3D
 @export var pikmin_scene: PackedScene
 @export var player: Node3D  # Set this when the seed is created
 var has_landed := false  # To prevent double-triggering
+@onready var poof_particles = $PoofParticles
 
 func _ready():
 	contact_monitor = true
@@ -31,3 +32,5 @@ func freeze_seed():
 	global_transform = xform
 
 	freeze = true  # Stop simulation
+	poof_particles.restart()
+	poof_particles.emitting = true
