@@ -15,7 +15,7 @@ bottom_radius = 0.1
 height = 0.5
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_evjfh"]
-radius = 0.266
+radius = 1.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sakjf"]
 albedo_color = Color(1, 0.180392, 0.0705882, 1)
@@ -50,7 +50,7 @@ material = SubResource("StandardMaterial3D_ctw0n")
 
 [node name="DevSeed" type="RigidBody3D"]
 collision_layer = 16
-collision_mask = 5
+collision_mask = 4
 physics_material_override = SubResource("PhysicsMaterial_sow6k")
 script = ExtResource("1_wsoyx")
 pikmin_scene = ExtResource("2_wsbcj")
@@ -61,7 +61,7 @@ layers = 17
 mesh = SubResource("CylinderMesh_0x22v")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0256289, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.823474, 0)
 shape = SubResource("SphereShape3D_evjfh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

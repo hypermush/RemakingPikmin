@@ -24,13 +24,23 @@ func pluck():
 		queue_free()
 		
 func freeze_seed():
-	#Log.print("Seed landed. Freezing in place.")
-
 	# Snap rotation to upright
 	var xform = global_transform
-	xform.basis = Basis()  # Reset rotation to identity (upright)
+	xform.basis = Basis()  # Reset rotation
 	global_transform = xform
 
-	#freeze = true  # Stop simulation
-	poof_particles.restart()
-	poof_particles.emitting = true
+	# Raycast down to find ground
+	var space_state = get_world_3d().direct_space_state
+	var from = global_transform.origin + Vector3.UP * 0.5
+	var to = global_transform.origin + Vector3.DOWN * 2.0
+
+	var ray = PhysicsRayQueryParameters3D.new()
+	ray.from = from
+	ray.to = to
+	ray.exclude = [self]
+
+	var result = space_state.intersect_ray(ray)
+	if result:
+		global_transform.origin.y = result.position.y
+
+	freeze = true
