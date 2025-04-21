@@ -389,12 +389,14 @@ func interact_call():
 			# No zone — look for seeds to pluck
 			var space_state = get_world_3d().direct_space_state
 			var query = PhysicsShapeQueryParameters3D.new()
+			query.set_margin(0.05)
+			query.collision_mask = 0xFFFFFFFF
 			query.set_shape($InteractionArea.shape)
 			query.transform = $InteractionArea.global_transform
 			query.collision_mask = 16  # Use a new layer just for seeds
 
 			var results = space_state.intersect_shape(query, 10)
-			#Log.print("Seeds found: " + str(results.size()))
+			Log.print("Seeds found: " + str(results.size()))
 			for result in results:
 				var current_seed = result.collider
 				if current_seed and current_seed.has_method("pluck"):

@@ -8,7 +8,7 @@ var has_landed := false  # To prevent double-triggering
 
 func _ready():
 	contact_monitor = true
-	max_contacts_reported = 1  # How many contacts to report
+	max_contacts_reported = 2  # How many contacts to report
 
 func _physics_process(delta):
 	if not has_landed and get_contact_count() > 0:
@@ -31,6 +31,6 @@ func freeze_seed():
 	xform.basis = Basis()  # Reset rotation to identity (upright)
 	global_transform = xform
 
-	freeze = true  # Stop simulation
+	#freeze = true  # Stop simulation
 	poof_particles.restart()
 	poof_particles.emitting = true
