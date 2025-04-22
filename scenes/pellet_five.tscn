@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dj1dcceai40gq"]
+
+[ext_resource type="PackedScene" uid="uid://7l0kdkklib6k" path="res://scenes/carryable_item.tscn" id="1_ymrkd"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8d2gw"]
+albedo_color = Color(0.168627, 0.168627, 0.827451, 1)
+roughness = 0.35
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ifvus"]
+material = SubResource("StandardMaterial3D_8d2gw")
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.5
+
+[node name="DevCarryable" instance=ExtResource("1_ymrkd")]
+weight = 5
+
+[node name="PelletBody" type="MeshInstance3D" parent="." index="4"]
+mesh = SubResource("CylinderMesh_ifvus")

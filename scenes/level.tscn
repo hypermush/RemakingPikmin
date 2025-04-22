@@ -1,13 +1,14 @@
-[gd_scene load_steps=28 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=29 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
 [ext_resource type="PackedScene" uid="uid://hknnxwg8cib" path="res://scenes/interaction_zone.tscn" id="3_o5ufs"]
 [ext_resource type="PackedScene" uid="uid://c5kgw5m1gsrvt" path="res://scenes/follow_point.tscn" id="3_wc42g"]
+[ext_resource type="PackedScene" uid="uid://cisvq42mis4uw" path="res://scenes/pellet_one.tscn" id="4_3bq18"]
+[ext_resource type="PackedScene" uid="uid://dj1dcceai40gq" path="res://scenes/pellet_five.tscn" id="5_e7888"]
 [ext_resource type="Texture2D" uid="uid://b7v8pag6jm2qx" path="res://assets/textures/tileable-s7002876-dark.png" id="6_mnfry"]
 [ext_resource type="PackedScene" uid="uid://raf5vb8lntpx" path="res://scenes/melon.tscn" id="7_ol4pb"]
 [ext_resource type="PackedScene" uid="uid://b3g2651hm7f70" path="res://scenes/carry_destination.tscn" id="7_qs0e1"]
-[ext_resource type="PackedScene" uid="uid://7l0kdkklib6k" path="res://scenes/carryable_item.tscn" id="10_jq5w6"]
 [ext_resource type="PackedScene" uid="uid://4csjdrh06ih2" path="res://scenes/seed.tscn" id="11_h0ypw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l1rx6"]
@@ -100,7 +101,27 @@ _idle_pikmin_container = NodePath("../IdlePikminContainer")
 _squad_pikmin_container = NodePath("../SquadPikminContainer")
 follow_point = ExtResource("3_wc42g")
 
-[node name="Plants" type="Node" parent="."]
+[node name="Pellets" type="Node" parent="."]
+
+[node name="DevCarryable" parent="Pellets" node_paths=PackedStringArray("carry_destination") instance=ExtResource("4_3bq18")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.55913, 0.279262, -16.2122)
+carry_destination = NodePath("../../DevOnion/OnionCarryDestination")
+
+[node name="DevCarryable3" parent="Pellets" node_paths=PackedStringArray("carry_destination") instance=ExtResource("4_3bq18")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0767103, 0.279262, -13.438)
+carry_destination = NodePath("../../DevOnion/OnionCarryDestination")
+
+[node name="DevCarryable4" parent="Pellets" node_paths=PackedStringArray("carry_destination") instance=ExtResource("4_3bq18")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.96629, 0.279262, -20.7969)
+carry_destination = NodePath("../../DevOnion/OnionCarryDestination")
+
+[node name="DevCarryable5" parent="Pellets" node_paths=PackedStringArray("carry_destination") instance=ExtResource("4_3bq18")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.51954, 0.279262, -25.6721)
+carry_destination = NodePath("../../DevOnion/OnionCarryDestination")
+
+[node name="DevCarryable2" parent="Pellets" node_paths=PackedStringArray("carry_destination") instance=ExtResource("5_e7888")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.2213, 0.279262, -17.7231)
+carry_destination = NodePath("../../DevOnion/OnionCarryDestination")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-1, 0, -8.74228e-08, -8.33596e-08, -0.301322, 0.953523, -2.63424e-08, 0.953523, 0.301322, 0, 16.1193, 0)
@@ -172,31 +193,6 @@ mesh = SubResource("CapsuleMesh_vim0u")
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -44.237, 9.81457, -90.3522)
 
 [node name="SquadPikminContainer" type="Node3D" parent="."]
-
-[node name="DevCarryableFive" parent="." node_paths=PackedStringArray("carry_destination") instance=ExtResource("10_jq5w6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.2529, 0.319682, -19.4291)
-weight = 5
-carry_destination = NodePath("../DevOnion/OnionCarryDestination")
-
-[node name="DevCarryableOne" parent="." node_paths=PackedStringArray("carry_destination") instance=ExtResource("10_jq5w6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.558114, 0.319682, -14.2254)
-value = 1
-carry_destination = NodePath("../DevOnion/OnionCarryDestination")
-
-[node name="DevCarryableOne2" parent="." node_paths=PackedStringArray("carry_destination") instance=ExtResource("10_jq5w6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.506091, 0.319682, -17.1202)
-value = 1
-carry_destination = NodePath("../DevOnion/OnionCarryDestination")
-
-[node name="DevCarryableOne3" parent="." node_paths=PackedStringArray("carry_destination") instance=ExtResource("10_jq5w6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.42885, 0.319682, -19.2314)
-value = 1
-carry_destination = NodePath("../DevOnion/OnionCarryDestination")
-
-[node name="DevCarryableOne4" parent="." node_paths=PackedStringArray("carry_destination") instance=ExtResource("10_jq5w6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4256, 0.319682, -15.562)
-value = 1
-carry_destination = NodePath("../DevOnion/OnionCarryDestination")
 
 [node name="DevSeeds" type="Node3D" parent="."]
 

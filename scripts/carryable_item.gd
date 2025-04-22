@@ -14,6 +14,8 @@ var _carry_buffer := 0.3
 var _complete := false
 @onready var collision_shape: CollisionShape3D = %CarryableCollision
 
+@export var mesh_holder: Node3D # potential to swap visuals
+
 @onready var carry_parent := $CarryPoints
 
 var carry_points := []  # Will hold references to the spawned carry point nodes
@@ -36,7 +38,7 @@ func _ready() -> void:
 	# Determine carry radius dynamically from the shape
 	if collision_shape.shape is CylinderShape3D:
 		var cylinder_shape := collision_shape.shape as CylinderShape3D
-		carry_radius = cylinder_shape.radius + _carry_buffer  # Add a small buffer
+		carry_radius += _carry_buffer  # Add a small buffer
 		#Log.print("Carry radius set to: " + str(carry_radius))
 	else:
 		Log.print("Warning: Collision shape is not a cylinder. Using default radius.")
@@ -82,7 +84,7 @@ func _physics_process(_delta):
 
 func generate_carry_points():
 	carry_points.clear()
-	#Log.print("Generating carry points for weight: " + str(weight)) 
+	Log.print("Generating carry points for radius: " + str(carry_radius)) 
 	for i in range(weight):
 		var angle = (TAU / weight) * i  # Evenly spaced in a circle
 		var x = cos(angle) * carry_radius
