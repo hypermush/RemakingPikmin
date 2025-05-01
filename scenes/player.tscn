@@ -53,7 +53,7 @@ radius = 1.55111
 
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-collision_mask = 5
+collision_mask = 45
 script = ExtResource("1_0nf4c")
 
 [node name="PlayerSkin" type="MeshInstance3D" parent="."]

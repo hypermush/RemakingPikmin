@@ -15,8 +15,14 @@ enum State {
 	POSITIONING,
 	WORKING,
 }
+# carrying stuff
 var assigned_carry_point: Node3D = null
 var carryable_target: Node3D = null
+
+#wall stuff
+var assigned_wall: Node3D = null
+var _last_wall_hit_time := 0
+
 @onready var _detection_area: Area3D = $DetectionRadius
 
 # Public references
@@ -41,6 +47,8 @@ func _ready():
 	
 	# connect to signal for detection
 	_detection_area.area_entered.connect(_on_area_entered)
+	
+	add_to_group("Pikmin")
 	
 # Called every frame. Handles state transitions and movement
 func _process(delta: float) -> void:
@@ -114,9 +122,30 @@ func _physics_process(delta):
 			return
 			
 		State.WORKING:
-			# Do nothing, fully frozen
-			velocity = Vector3.ZERO
-			return
+			if assigned_wall:
+				# Face the wall
+				look_at(assigned_wall.global_transform.origin, Vector3.UP)
+
+				# Only damage once per second
+				if Time.get_ticks_msec() - _last_wall_hit_time > 1000:
+					_last_wall_hit_time = Time.get_ticks_msec()  # Lock timer immediately
+
+					# Animate
+					scale = Vector3(1.1, 0.9, 1.1)
+					await get_tree().create_timer(0.1).timeout
+					scale = Vector3.ONE
+
+					# Recheck before dealing damage
+					if assigned_wall and not assigned_wall.is_destroyed:
+						assigned_wall.take_damage(1)
+					else:
+						# Stop working if wall is gone
+						assigned_wall = null
+						current_state = State.IDLE
+				return
+			else:
+				velocity = Vector3.ZERO
+				return
 
 	# Default pathing for FOLLOWING etc.
 	if not _navigation_agent.is_navigation_finished():
@@ -227,6 +256,12 @@ func _on_area_entered(area: Area3D):
 			current_state = State.POSITIONING
 			#Log.print("Assigned carry point: " + str(assigned_carry_point))
 			#Log.print("Pikmin assigned to carry point!")
+	elif item.is_in_group("DestructibleWall"):
+		Log.print("wall interaction")
+		assigned_wall = item
+		current_state = State.WORKING
+		snap_to_ground()
+		
 
 func detach_from_carryable():
 	if assigned_carry_point and carryable_target:

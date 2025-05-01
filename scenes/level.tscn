@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://ccb1iowo1ks33"]
+[gd_scene load_steps=37 format=3 uid="uid://ccb1iowo1ks33"]
 
 [ext_resource type="PackedScene" uid="uid://x0f6skrphdbu" path="res://scenes/player.tscn" id="1_ihxn3"]
 [ext_resource type="PackedScene" uid="uid://dyk5qsdux6adt" path="res://scenes/pikmin.tscn" id="2_l3mf0"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://b7v8pag6jm2qx" path="res://assets/textures/tileable-s7002876-dark.png" id="6_mnfry"]
 [ext_resource type="PackedScene" uid="uid://raf5vb8lntpx" path="res://scenes/melon.tscn" id="7_ol4pb"]
 [ext_resource type="PackedScene" uid="uid://b3g2651hm7f70" path="res://scenes/carry_destination.tscn" id="7_qs0e1"]
+[ext_resource type="Script" path="res://scenes/dev_wall.gd" id="11_bp14g"]
 [ext_resource type="PackedScene" uid="uid://4csjdrh06ih2" path="res://scenes/seed.tscn" id="11_h0ypw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l1rx6"]
@@ -46,7 +47,11 @@ uv1_triplanar = true
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_4r6u1"]
 data = PackedVector3Array(5, 0, 5, -5, 0, 5, 5, 0, -5, -5, 0, 5, -5, 0, -5, 5, 0, -5)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dp0u2"]
+albedo_texture_force_srgb = true
+
 [sub_resource type="BoxMesh" id="BoxMesh_nq8m0"]
+material = SubResource("StandardMaterial3D_dp0u2")
 size = Vector3(9.45, 5.03, 1)
 
 [sub_resource type="Gradient" id="Gradient_og34f"]
@@ -83,6 +88,26 @@ material = SubResource("StandardMaterial3D_b1r2o")
 top_radius = 0.2
 bottom_radius = 0.2
 height = 6.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4a2bo"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n1gjv"]
+noise = SubResource("FastNoiseLite_4a2bo")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_71mun"]
+albedo_color = Color(0.517861, 0.37518, 0.361335, 1)
+albedo_texture = SubResource("NoiseTexture2D_n1gjv")
+albedo_texture_force_srgb = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_pdyjd"]
+material = SubResource("StandardMaterial3D_71mun")
+size = Vector3(9.45, 5.03, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ulqs8"]
+size = Vector3(9.38354, 4.97375, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hnyrb"]
+size = Vector3(9.65619, 1.5365, 2.81946)
 
 [node name="World" type="Node3D"]
 
@@ -232,3 +257,25 @@ visible = false
 
 [node name="SeedLaunchPoint" type="Node3D" parent="DevOnion"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.39353, 0)
+
+[node name="DevWall" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5298, 2.52792, -27.4873)
+collision_layer = 32
+collision_mask = 15
+script = ExtResource("11_bp14g")
+max_health = 300
+
+[node name="WallMesh" type="MeshInstance3D" parent="DevWall"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+mesh = SubResource("BoxMesh_pdyjd")
+skeleton = NodePath("../../NavigationRegion3D/DevObstacle")
+
+[node name="WallCollision" type="CollisionShape3D" parent="DevWall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0479736, 6.10352e-05, 0)
+shape = SubResource("BoxShape3D_ulqs8")
+
+[node name="WallInteraction" type="Area3D" parent="DevWall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DevWall/WallInteraction"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00497437, -1.54523, 0.0342407)
+shape = SubResource("BoxShape3D_hnyrb")
