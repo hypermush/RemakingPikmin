@@ -155,6 +155,9 @@ func add_pikmin_to_idle(pikmin: Node3D):
 	pikmin._navigation_agent.set_target_position(pikmin.target_position)
 	
 func add_pikmin_to_squad(pikmin: Node3D):
+	if pikmin.get_parent():
+		pikmin.get_parent().remove_child(pikmin)
+	
 	if _squad_pikmin_container:
 		_squad_pikmin_container.add_child(pikmin)
 		_pikmin_list.append(pikmin)
@@ -396,7 +399,7 @@ func interact_call():
 			query.collision_mask = 16  # Use a new layer just for seeds
 
 			var results = space_state.intersect_shape(query, 10)
-			Log.print("Seeds found: " + str(results.size()))
+			#Log.print("Seeds found: " + str(results.size()))
 			for result in results:
 				var current_seed = result.collider
 				if current_seed and current_seed.has_method("pluck"):

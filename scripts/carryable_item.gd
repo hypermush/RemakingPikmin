@@ -84,7 +84,7 @@ func _physics_process(_delta):
 
 func generate_carry_points():
 	carry_points.clear()
-	Log.print("Generating carry points for radius: " + str(carry_radius)) 
+	#Log.print("Generating carry points for radius: " + str(carry_radius)) 
 	for i in range(weight):
 		var angle = (TAU / weight) * i  # Evenly spaced in a circle
 		var x = cos(angle) * carry_radius

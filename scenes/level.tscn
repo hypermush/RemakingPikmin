@@ -109,6 +109,7 @@ carry_destination = NodePath("../../DevOnion/OnionCarryDestination")
 
 [node name="DevCarryable3" parent="Pellets" node_paths=PackedStringArray("carry_destination") instance=ExtResource("4_3bq18")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0767103, 0.279262, -13.438)
+value = 100
 carry_destination = NodePath("../../DevOnion/OnionCarryDestination")
 
 [node name="DevCarryable4" parent="Pellets" node_paths=PackedStringArray("carry_destination") instance=ExtResource("4_3bq18")]
@@ -120,7 +121,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.51954, 0.279262, -25.6721)
 carry_destination = NodePath("../../DevOnion/OnionCarryDestination")
 
 [node name="DevCarryable2" parent="Pellets" node_paths=PackedStringArray("carry_destination") instance=ExtResource("5_e7888")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.2213, 0.279262, -17.7231)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.2213, 0.279262, -15.7231)
 carry_destination = NodePath("../../DevOnion/OnionCarryDestination")
 
 [node name="Camera3D" type="Camera3D" parent="."]

@@ -13,6 +13,10 @@ enum DestinationType {
 @export var pikmin_scene: PackedScene
 @onready var seed_launch_point := $"../../DevOnion/SeedLaunchPoint"
 
+var launch_radius = 6.0
+var launch_height = 4.0
+var launch_time = 1.5  # seconds
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if not destination_type:
@@ -45,17 +49,54 @@ func _spawn_pikmin_seeds(count: int):
 		seed.pikmin_scene = pikmin_scene
 		get_tree().current_scene.add_child(seed)
 
-		# Position at the top of the onion
-		seed.global_transform.origin = seed_launch_point.global_transform.origin
-
-		# Ensure the physics frame has started
-		await get_tree().physics_frame
-
-		# Randomized launch force
+		var start_pos = seed_launch_point.global_transform.origin
+		
+		# Get where the seed will *land* horizontally
 		var angle = randf_range(0, TAU)
-		var direction = Vector3(cos(angle), 1.0, sin(angle)).normalized()
-		var force = direction * 8.0
+		var horizontal_offset = Vector3(cos(angle), 0, sin(angle)) * launch_radius
+		var ground_y = 0  # Adjust this if your level's ground isn't perfectly flat at Y=0
+		var end_pos = start_pos + horizontal_offset
+		end_pos.y = ground_y
 
-		# Confirm the node is a RigidBody3D before applying
-		if seed is RigidBody3D:
-			seed.apply_impulse(force)
+		seed.global_transform.origin = start_pos
+		seed.start_trail()
+
+		var tween = create_tween()
+		
+		# Tween progress from 0 → 1, calling the helper function
+		tween.tween_method(
+			func(progress: float) -> void:
+				_update_seed_motion(seed, start_pos, end_pos, progress, launch_height),
+			0.0,
+			1.0,
+			launch_time
+		).set_trans(Tween.TRANS_LINEAR)
+		# ✨ Add a short delay before next seed
+		await get_tree().create_timer(0.05).timeout  # 0.1 seconds = adjust as needed
+		
+func _update_seed_motion(seed: Node3D, start_pos: Vector3, end_pos: Vector3, progress: float, peak_height: float) -> void:
+	var new_pos = start_pos.lerp(end_pos, progress)
+	
+	# Parabolic height
+	var base_y = lerp(start_pos.y, end_pos.y, progress)
+	var arc_offset = peak_height * 4.0 * progress * (1.0 - progress)
+	new_pos.y = base_y + arc_offset
+	
+	# Update seed position
+	seed.global_transform.origin = new_pos
+	
+	# --- Rotation logic ---
+	var horizontal_dir = (end_pos - start_pos)
+	horizontal_dir.y = 0
+	horizontal_dir = horizontal_dir.normalized()
+	
+	# Calculate tilt based on progress
+	var tilt_angle = lerp(-160.0, 0.0, progress)  # -90 degrees = stem straight down, 10 degrees up at end
+	
+	var basis = Basis()
+	basis = basis.rotated(Vector3.UP, atan2(horizontal_dir.x, horizontal_dir.z))  # Face outward
+	basis = basis.rotated(basis.x, deg_to_rad(tilt_angle))  # Tilt around the sideways axis
+	
+	var transform = seed.global_transform
+	transform.basis = basis
+	seed.global_transform = transform

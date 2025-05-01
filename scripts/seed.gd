@@ -5,10 +5,13 @@ extends RigidBody3D
 @export var player: Node3D  # Set this when the seed is created
 var has_landed := false  # To prevent double-triggering
 @onready var poof_particles = $PoofParticles
+@onready var trail_particles = $TrailParticles
 
 func _ready():
 	contact_monitor = true
 	max_contacts_reported = 2  # How many contacts to report
+	# Turn off trail initially
+	trail_particles.emitting = false
 
 func _physics_process(delta):
 	if not has_landed and get_contact_count() > 0:
@@ -16,10 +19,13 @@ func _physics_process(delta):
 		freeze_seed()
 	
 func pluck():
-	#Log.print("Seed has been plucked!")
 	if pikmin_scene and player:
+		var spawn_position = global_transform.origin  # Get seed's position
+
 		var pikmin = pikmin_scene.instantiate()
-		pikmin.global_transform.origin = global_transform.origin
+		get_tree().current_scene.add_child(pikmin)  # Must add to tree first
+		pikmin.global_transform = Transform3D(Basis(), spawn_position)
+
 		player.add_pikmin_to_squad(pikmin)
 		queue_free()
 		
@@ -44,3 +50,12 @@ func freeze_seed():
 		global_transform.origin.y = result.position.y
 
 	freeze = true
+	poof_particles.restart()
+	poof_particles.emitting = true
+	stop_trail()
+	
+func start_trail():
+	trail_particles.emitting = true
+
+func stop_trail():
+	trail_particles.emitting = false
