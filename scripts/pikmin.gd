@@ -52,12 +52,12 @@ func _ready():
 	
 # Called every frame. Handles state transitions and movement
 func _process(delta: float) -> void:
-	if player:
-		var look_position = player.global_transform.origin
-		look_position.y = global_transform.origin.y  # Keep it on the same Y plane
-		look_at(look_position, Vector3.UP)
 	match current_state:
 		State.FOLLOWING:
+			if player:
+				var look_position = player.global_transform.origin
+				look_position.y = global_transform.origin.y  # Keep it on the same Y plane
+				look_at(look_position, Vector3.UP)
 			follow_target(delta)
 		State.WAITING:
 			waiting_state(delta)

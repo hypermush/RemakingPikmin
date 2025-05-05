@@ -48,7 +48,7 @@ func destroy():
 	obstacle.set_affect_navigation_mesh(false)
 	# this is the rebake to make that change ^ have effect
 	navigation_region.bake_navigation_mesh()
-	Log.print("Change in obstacle?")
+	#Log.print("Change in obstacle?")
 	
 	# actually delete the wall
 	# I think it looks better if you can still see the wall tho :)

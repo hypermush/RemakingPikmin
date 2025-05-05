@@ -1,17 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://dyk5qsdux6adt"]
+[gd_scene load_steps=9 format=3 uid="uid://dyk5qsdux6adt"]
 
 [ext_resource type="Script" path="res://scripts/pikmin.gd" id="1_80hys"]
+[ext_resource type="Material" uid="uid://vhs4m8qbalok" path="res://assets/textures/red.tres" id="2_7gpik"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_s5qit"]
 radius = 0.254271
 height = 1.06305
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bib30"]
-albedo_color = Color(1, 0.0666667, 0.0705882, 1)
-roughness = 0.45
-
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mgkp6"]
-material = SubResource("StandardMaterial3D_bib30")
+material = ExtResource("2_7gpik")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_csbiu"]
 albedo_color = Color(0.176471, 1, 0, 1)
@@ -19,6 +16,12 @@ roughness = 0.9
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_or151"]
 material = SubResource("StandardMaterial3D_csbiu")
+top_radius = 0.0
+bottom_radius = 0.1
+height = 0.378
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_a2yc5"]
+material = ExtResource("2_7gpik")
 top_radius = 0.0
 bottom_radius = 0.1
 height = 0.378
@@ -42,9 +45,13 @@ shape = SubResource("CapsuleShape3D_s5qit")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.508989, 0)
 mesh = SubResource("CapsuleMesh_mgkp6")
 
-[node name="Leaf" type="MeshInstance3D" parent="."]
+[node name="Stem" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1, 4.53578e-08, -7.47356e-08, 0, 0.854876, 0.518833, 8.74228e-08, 0.518833, -0.854876, 0, 1.09044, 0.204166)
 mesh = SubResource("CylinderMesh_or151")
+
+[node name="Nose" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, 8.74228e-08, -3.82137e-15, 0, -4.37114e-08, -1, -8.74228e-08, -1, 4.37114e-08, 0, 0.719307, -0.253905)
+mesh = SubResource("CylinderMesh_a2yc5")
 
 [node name="DetectionRadius" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
