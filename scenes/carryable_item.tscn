@@ -1,11 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://7l0kdkklib6k"]
+[gd_scene load_steps=6 format=3 uid="uid://7l0kdkklib6k"]
 
 [ext_resource type="Script" path="res://scripts/carryable_item.gd" id="1_dpyts"]
 [ext_resource type="PackedScene" uid="uid://c8ksn5ioatxkd" path="res://scenes/carry_point.tscn" id="2_xhcso"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_qb4xe"]
 height = 0.487224
-radius = 0.998215
+radius = 0.533
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_fpxa7"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cq5qp"]
 height = 0.566454
@@ -19,6 +21,10 @@ carry_point_scene = ExtResource("2_xhcso")
 
 [node name="ObjectCollision" type="CollisionShape3D" parent="."]
 shape = SubResource("CylinderShape3D_qb4xe")
+
+[node name="TopCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.247125, 0)
+shape = SubResource("SphereShape3D_fpxa7")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 

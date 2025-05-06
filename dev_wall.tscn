@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3 uid="uid://dxsnnp71jxflt"]
+
+[ext_resource type="Script" path="res://scenes/dev_wall.gd" id="1_4hynv"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4a2bo"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n1gjv"]
+noise = SubResource("FastNoiseLite_4a2bo")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_71mun"]
+albedo_color = Color(0.517861, 0.37518, 0.361335, 1)
+albedo_texture = SubResource("NoiseTexture2D_n1gjv")
+albedo_texture_force_srgb = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_pdyjd"]
+material = SubResource("StandardMaterial3D_71mun")
+size = Vector3(9.45, 5.03, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ulqs8"]
+size = Vector3(9.38354, 4.97375, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hnyrb"]
+size = Vector3(9.65619, 1.5365, 2.81946)
+
+[node name="DevWall" type="StaticBody3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 2.52301, 0)
+collision_layer = 32
+collision_mask = 15
+script = ExtResource("1_4hynv")
+max_health = 5
+
+[node name="WallMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+mesh = SubResource("BoxMesh_pdyjd")
+skeleton = NodePath("../../NavigationRegion3D/DevObstacle")
+
+[node name="WallCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0479736, 6.10352e-05, 0)
+shape = SubResource("BoxShape3D_ulqs8")
+
+[node name="WallInteraction" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallInteraction"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00497437, -1.54523, 0.0342407)
+shape = SubResource("BoxShape3D_hnyrb")

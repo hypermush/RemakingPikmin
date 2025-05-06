@@ -15,12 +15,8 @@ func _ready() -> void:
 	# this group is what pikmin look for
 	add_to_group("DestructibleWall")
 	
-	# tell me about the obstacle:
-	#Log.print("Obstacle affect nav mesh?:" + str(obstacle.affect_navigation_mesh))
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+	if not obstacle:
+		Log.print("Wall doesn't have nav obstacle!")
 
 func take_damage(amount: int):
 	if ! is_destroyed:

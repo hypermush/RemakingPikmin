@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cisvq42mis4uw"]
+[gd_scene load_steps=9 format=3 uid="uid://cisvq42mis4uw"]
 
 [ext_resource type="PackedScene" uid="uid://7l0kdkklib6k" path="res://scenes/carryable_item.tscn" id="1_ds2i1"]
+[ext_resource type="FontFile" uid="uid://c83g23gy4jspx" path="res://assets/fonts/okay_jelly/Okay Jelly.otf" id="2_71pot"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dg7d7"]
 albedo_color = Color(1, 0.156863, 0.129412, 1)
@@ -10,9 +11,47 @@ roughness = 0.35
 material = SubResource("StandardMaterial3D_dg7d7")
 height = 0.5
 
+[sub_resource type="LabelSettings" id="LabelSettings_40y23"]
+font = ExtResource("2_71pot")
+font_size = 466
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_6agal"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vesyy"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_6agal")
+
+[sub_resource type="QuadMesh" id="QuadMesh_iql46"]
+
 [node name="DevCarryable" instance=ExtResource("1_ds2i1")]
 value = 1
 carry_radius = 0.5
 
 [node name="PelletBody" type="MeshInstance3D" parent="." index="4"]
 mesh = SubResource("CylinderMesh_0yr0u")
+
+[node name="SubViewport" type="SubViewport" parent="." index="6"]
+transparent_bg = true
+
+[node name="Control" type="Control" parent="SubViewport" index="0"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="SubViewport/Control" index="0"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "1"
+label_settings = SubResource("LabelSettings_40y23")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UIMesh" type="MeshInstance3D" parent="." index="7"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.204454, 0.257434, 0.0647299)
+material_override = SubResource("StandardMaterial3D_vesyy")
+mesh = SubResource("QuadMesh_iql46")

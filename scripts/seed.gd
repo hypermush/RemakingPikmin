@@ -13,7 +13,7 @@ func _ready():
 	# Turn off trail initially
 	trail_particles.emitting = false
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if not has_landed and get_contact_count() > 0:
 		has_landed = true
 		freeze_seed()

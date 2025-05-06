@@ -44,10 +44,10 @@ func _on_carryable_reached_destination(payload: Dictionary):
 			
 func _spawn_pikmin_seeds(count: int):
 	for i in count:
-		var seed = seed_scene.instantiate()
-		seed.player = player
-		seed.pikmin_scene = pikmin_scene
-		get_tree().current_scene.add_child(seed)
+		var new_seed = seed_scene.instantiate()
+		new_seed.player = player
+		new_seed.pikmin_scene = pikmin_scene
+		get_tree().current_scene.add_child(new_seed)
 
 		var start_pos = seed_launch_point.global_transform.origin
 		
@@ -58,15 +58,15 @@ func _spawn_pikmin_seeds(count: int):
 		var end_pos = start_pos + horizontal_offset
 		end_pos.y = ground_y
 
-		seed.global_transform.origin = start_pos
-		seed.start_trail()
+		new_seed.global_transform.origin = start_pos
+		new_seed.start_trail()
 
 		var tween = create_tween()
 		
 		# Tween progress from 0 → 1, calling the helper function
 		tween.tween_method(
 			func(progress: float) -> void:
-				_update_seed_motion(seed, start_pos, end_pos, progress, launch_height),
+				_update_seed_motion(new_seed, start_pos, end_pos, progress, launch_height),
 			0.0,
 			1.0,
 			launch_time
@@ -74,7 +74,7 @@ func _spawn_pikmin_seeds(count: int):
 		# ✨ Add a short delay before next seed
 		await get_tree().create_timer(0.05).timeout  # 0.1 seconds = adjust as needed
 		
-func _update_seed_motion(seed: Node3D, start_pos: Vector3, end_pos: Vector3, progress: float, peak_height: float) -> void:
+func _update_seed_motion(pik_seed: Node3D, start_pos: Vector3, end_pos: Vector3, progress: float, peak_height: float) -> void:
 	var new_pos = start_pos.lerp(end_pos, progress)
 	
 	# Parabolic height
@@ -83,7 +83,7 @@ func _update_seed_motion(seed: Node3D, start_pos: Vector3, end_pos: Vector3, pro
 	new_pos.y = base_y + arc_offset
 	
 	# Update seed position
-	seed.global_transform.origin = new_pos
+	pik_seed.global_transform.origin = new_pos
 	
 	# --- Rotation logic ---
 	var horizontal_dir = (end_pos - start_pos)
@@ -93,10 +93,10 @@ func _update_seed_motion(seed: Node3D, start_pos: Vector3, end_pos: Vector3, pro
 	# Calculate tilt based on progress
 	var tilt_angle = lerp(-160.0, 0.0, progress)  # -90 degrees = stem straight down, 10 degrees up at end
 	
-	var basis = Basis()
-	basis = basis.rotated(Vector3.UP, atan2(horizontal_dir.x, horizontal_dir.z))  # Face outward
-	basis = basis.rotated(basis.x, deg_to_rad(tilt_angle))  # Tilt around the sideways axis
+	var current_basis = Basis()
+	current_basis = current_basis.rotated(Vector3.UP, atan2(horizontal_dir.x, horizontal_dir.z))  # Face outward
+	current_basis = current_basis.rotated(current_basis.x, deg_to_rad(tilt_angle))  # Tilt around the sideways axis
 	
-	var transform = seed.global_transform
-	transform.basis = basis
-	seed.global_transform = transform
+	var current_transform = pik_seed.global_transform
+	current_transform.basis = current_basis
+	pik_seed.global_transform = current_transform

@@ -112,6 +112,9 @@ func _physics_process(delta):
 
 					# Optional: align with the point visually (lock in)
 					global_transform.origin = assigned_carry_point.global_transform.origin
+					
+					# actually commit weight to carryable
+					carryable_target.lift += 1
 					return
 					
 				move_and_slide()
@@ -124,7 +127,9 @@ func _physics_process(delta):
 		State.WORKING:
 			if assigned_wall:
 				# Face the wall
-				look_at(assigned_wall.global_transform.origin, Vector3.UP)
+				var look_position = assigned_wall.global_transform.origin
+				look_position.y = global_transform.origin.y  # Keep it on the same Y plane
+				look_at(look_position, Vector3.UP)
 
 				# Only damage once per second
 				if Time.get_ticks_msec() - _last_wall_hit_time > 1000:
@@ -143,7 +148,11 @@ func _physics_process(delta):
 						assigned_wall = null
 						current_state = State.IDLE
 				return
-			else:
+			elif carryable_target:
+				# Face the target
+				var look_position = carryable_target.global_transform.origin
+				look_position.y = global_transform.origin.y  # Keep it on the same Y plane
+				look_at(look_position, Vector3.UP)
 				velocity = Vector3.ZERO
 				return
 

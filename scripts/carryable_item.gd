@@ -103,7 +103,8 @@ func get_available_carry_point(pikmin: Node3D) -> Node3D:
 		for point in carry_points:
 			if point.claim(pikmin):
 				#Log.print("point claimed!")
-				lift += 1
+				# lift now calculated when pikmin reaches position
+				#lift += 1
 				return point
 	Log.print("We have enough lift")
 	return null
