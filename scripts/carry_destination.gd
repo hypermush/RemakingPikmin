@@ -21,12 +21,21 @@ var launch_time = 1.5  # seconds
 func _ready() -> void:
 	if not destination_type:
 		Log.print("Destination is missing type!")
-	if destination_type == DestinationType.ONION and not seed_scene:
+		return
+
+	if destination_type != DestinationType.ONION:
+		return  # No further setup needed if not an onion
+
+	# Onion-specific setup
+	if not seed_scene:
 		Log.print("Onion is missing seed reference!")
-	if destination_type == DestinationType.ONION and not player:
+	if not player:
 		Log.print("Onion is missing player reference!")
-	if destination_type == DestinationType.ONION and not pikmin_scene:
+	if not pikmin_scene:
 		Log.print("Onion is missing pikmin reference!")
+
+	GlobalRefs.onion = self
+		
 	#connect("reached_destination", Callable(self, "_on_carryable_reached_destination"))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

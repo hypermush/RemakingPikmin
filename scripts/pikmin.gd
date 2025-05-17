@@ -23,6 +23,12 @@ var carryable_target: Node3D = null
 var assigned_wall: Node3D = null
 var _last_wall_hit_time := 0
 
+# ideally, we don't need a var for each type of interactable
+var assigned_object: Node3D = null
+var _last_wall_object_time := 0
+# currently this is made to be a flower and not a wall^
+# todo is generalizing this
+
 @onready var _detection_area: Area3D = $DetectionRadius
 
 # Public references
@@ -148,6 +154,31 @@ func _physics_process(delta):
 						assigned_wall = null
 						current_state = State.IDLE
 				return
+			if assigned_object:
+				# flower for now
+				# Face the object
+				var look_position = assigned_object.global_transform.origin
+				look_position.y = global_transform.origin.y  # Keep it on the same Y plane
+				look_at(look_position, Vector3.UP)
+				
+				# Only damage once per second
+				if Time.get_ticks_msec() - _last_wall_object_time > 1000:
+					_last_wall_object_time = Time.get_ticks_msec()  # Lock timer immediately
+
+					# Animate
+					scale = Vector3(1.1, 0.9, 1.1)
+					await get_tree().create_timer(0.1).timeout
+					scale = Vector3.ONE
+
+					# Recheck before dealing damage
+					if assigned_object and not assigned_object.is_destroyed:
+						assigned_object.take_damage(1)
+					else:
+						# Stop working if wall is gone
+						assigned_object = null
+						current_state = State.IDLE
+				return
+				
 			elif carryable_target:
 				# Face the target
 				var look_position = carryable_target.global_transform.origin
@@ -270,8 +301,12 @@ func _on_area_entered(area: Area3D):
 		assigned_wall = item
 		current_state = State.WORKING
 		snap_to_ground()
+	elif item.is_in_group("Flowers"):
+		Log.print("flower interaction")
+		assigned_object = item
+		current_state = State.WORKING
+		snap_to_ground()
 		
-
 func detach_from_carryable():
 	if assigned_carry_point and carryable_target:
 		#Log.print("Releasing a pikmin?")

@@ -321,5 +321,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.39353, 0)
 
 [node name="DevFlower" parent="." instance=ExtResource("12_11v0f")]
 transform = Transform3D(-0.806063, 0, -0.59183, 0, 1, 0, 0.59183, 0, -0.806063, -1.27808, 2.52313, -32.8849)
-max_health = 5
-pellet_to_spawn = ExtResource("4_3bq18")

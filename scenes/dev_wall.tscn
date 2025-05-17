@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://dxsnnp71jxflt"]
 
-[ext_resource type="Script" path="res://scenes/dev_wall.gd" id="1_4hynv"]
+[ext_resource type="Script" path="res://scripts/dev_wall.gd" id="1_4hynv"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_4a2bo"]
 

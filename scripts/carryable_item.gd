@@ -30,7 +30,9 @@ func _ready() -> void:
 		Log.print("Warning: Carryable item has no weight.")
 		return
 	if not carry_destination:
-		Log.print("No carry destination set")
+		Log.print("No carry destination set, using Global")
+		carry_destination = GlobalRefs.onion
+		Log.print("carry dest set to: " + str(carry_destination))
 		
 	# this group is what pikmin look for
 	add_to_group("carryable")
