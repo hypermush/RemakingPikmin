@@ -325,4 +325,5 @@ transform = Transform3D(-0.806063, 0, -0.59183, 0, 1, 0, 0.59183, 0, -0.806063, 
 max_health = 5
 pellet_to_spawn = ExtResource("4_3bq18")
 
-[node name="HUD" parent="." instance=ExtResource("13_ikngp")]
+[node name="HUD" parent="." node_paths=PackedStringArray("player") instance=ExtResource("13_ikngp")]
+player = NodePath("../Player")

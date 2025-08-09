@@ -1,6 +1,9 @@
 # Player Code:
 extends CharacterBody3D
 
+# signals
+signal update_hud_values(hud_vals)
+
 # temp test stuff for spawning pikmin at will
 @export var pikmin_scene: PackedScene  # Drag and drop Pikmin.tscn in the inspector
 var _pikmin_list: Array = [] # List to track Pikmin
@@ -164,6 +167,9 @@ func add_pikmin_to_squad(pikmin: Node3D):
 		pikmin.player = self
 		pikmin.current_state = pikmin.State.FOLLOWING
 		update_pikmin_follow_targets()
+		
+		# update UI HUD
+		emit_signal("update_hud_values", _pikmin_list.size())
 	
 # toggle between over the shoulder and bird's eye view
 func toggle_camera_angle():
@@ -203,6 +209,9 @@ func spawn_pikmin():
 		pikmin.player = self
 			
 		update_pikmin_follow_targets()
+		
+		# update UI HUD
+		emit_signal("update_hud_values", _pikmin_list.size())
 
 func _unhandled_input(_event: InputEvent) -> void:
 	pass

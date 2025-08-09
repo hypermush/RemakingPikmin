@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://cck3ckxsfgmek"]
+[gd_scene load_steps=9 format=3 uid="uid://cck3ckxsfgmek"]
 
+[ext_resource type="Script" path="res://hud.gd" id="1_lmaat"]
 [ext_resource type="FontFile" uid="uid://c83g23gy4jspx" path="res://assets/fonts/okay_jelly/Okay Jelly.otf" id="1_smh08"]
 [ext_resource type="Texture2D" uid="uid://4801caornxcp" path="res://assets/textures/toonman.png" id="2_lecad"]
 [ext_resource type="Texture2D" uid="uid://bxhrig8mpn0rt" path="res://assets/textures/health_circle.png" id="3_feqlm"]
@@ -23,6 +24,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_lmaat")
 
 [node name="DayCounter" type="Panel" parent="."]
 custom_minimum_size = Vector2(100, 100)
