@@ -1,0 +1,202 @@
+[gd_scene load_steps=8 format=3 uid="uid://cck3ckxsfgmek"]
+
+[ext_resource type="FontFile" uid="uid://c83g23gy4jspx" path="res://assets/fonts/okay_jelly/Okay Jelly.otf" id="1_smh08"]
+[ext_resource type="Texture2D" uid="uid://4801caornxcp" path="res://assets/textures/toonman.png" id="2_lecad"]
+[ext_resource type="Texture2D" uid="uid://bxhrig8mpn0rt" path="res://assets/textures/health_circle.png" id="3_feqlm"]
+[ext_resource type="Texture2D" uid="uid://djr1d6qrjntq3" path="res://assets/textures/pimmin_boof.jpg" id="4_3o81d"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2y7j3"]
+font = ExtResource("1_smh08")
+font_size = 71
+
+[sub_resource type="LabelSettings" id="LabelSettings_5msrj"]
+font_size = 71
+
+[sub_resource type="Theme" id="Theme_4lkgl"]
+default_font = ExtResource("1_smh08")
+default_font_size = 55
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DayCounter" type="Panel" parent="."]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.495
+offset_top = 21.76
+offset_right = -30.495
+offset_bottom = 121.76
+grow_horizontal = 0
+
+[node name="DayLabel" type="RichTextLabel" parent="DayCounter"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -17.0
+offset_right = 30.0
+offset_bottom = 25.0
+grow_horizontal = 2
+text = "DAY:
+"
+fit_content = true
+
+[node name="DayNumber" type="Label" parent="DayCounter"]
+layout_mode = 0
+offset_left = 16.495
+offset_top = 24.24
+offset_right = 85.495
+offset_bottom = 113.24
+text = "0"
+label_settings = SubResource("LabelSettings_2y7j3")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 16.0
+offset_right = 883.0
+offset_bottom = 94.0
+
+[node name="Panel" type="Panel" parent="TopContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TopContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 372.0
+offset_top = -11.0
+offset_right = -374.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Day Progress"
+fit_content = true
+
+[node name="DayProgress" type="ProgressBar" parent="TopContainer"]
+layout_mode = 2
+
+[node name="BottomLeftContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -200.0
+offset_right = 354.0
+grow_vertical = 0
+
+[node name="PlayerIcon" type="TextureRect" parent="BottomLeftContainer"]
+layout_mode = 2
+texture = ExtResource("2_lecad")
+expand_mode = 3
+
+[node name="PlayerHealthPie" type="TextureProgressBar" parent="BottomLeftContainer"]
+layout_mode = 2
+value = 33.0
+fill_mode = 4
+texture_under = ExtResource("3_feqlm")
+texture_progress = ExtResource("3_feqlm")
+tint_under = Color(0, 0, 0, 0.294118)
+tint_progress = Color(0, 1, 0, 1)
+
+[node name="BottomRightContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -694.0
+offset_top = -122.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="PikminIcon" type="TextureRect" parent="BottomRightContainer"]
+layout_mode = 2
+texture = ExtResource("4_3o81d")
+expand_mode = 3
+
+[node name="X" type="Label" parent="BottomRightContainer"]
+layout_mode = 2
+text = "X"
+label_settings = SubResource("LabelSettings_5msrj")
+
+[node name="SquadPanel" type="Panel" parent="BottomRightContainer"]
+custom_minimum_size = Vector2(119.52, 0)
+layout_mode = 2
+
+[node name="SquadCount" type="RichTextLabel" parent="BottomRightContainer/SquadPanel"]
+custom_minimum_size = Vector2(51.54, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 34.0
+offset_right = 0.480003
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme = SubResource("Theme_4lkgl")
+text = "000"
+
+[node name="Slash1" type="Label" parent="BottomRightContainer"]
+layout_mode = 2
+text = "/"
+label_settings = SubResource("LabelSettings_5msrj")
+
+[node name="WorldPanel2" type="Panel" parent="BottomRightContainer"]
+custom_minimum_size = Vector2(119.52, 0)
+layout_mode = 2
+
+[node name="WorldCount" type="RichTextLabel" parent="BottomRightContainer/WorldPanel2"]
+custom_minimum_size = Vector2(51.54, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 34.0
+offset_right = 0.480003
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme = SubResource("Theme_4lkgl")
+text = "000"
+
+[node name="Slash2" type="Label" parent="BottomRightContainer"]
+layout_mode = 2
+text = "/"
+label_settings = SubResource("LabelSettings_5msrj")
+
+[node name="TotalPanel" type="Panel" parent="BottomRightContainer"]
+custom_minimum_size = Vector2(157.515, 0)
+layout_mode = 2
+
+[node name="TotalCount" type="RichTextLabel" parent="BottomRightContainer/TotalPanel"]
+custom_minimum_size = Vector2(51.54, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 34.0
+offset_right = 45.48
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme = SubResource("Theme_4lkgl")
+text = "0000"

@@ -24,7 +24,7 @@ GlobalRefs="*res://scripts/singletons/GlobalRefs.gd"
 
 [display]
 
-window/stretch/mode="viewport"
+mouse_cursor/stretch/mode="viewport"
 
 [global_group]
 
