@@ -353,9 +353,11 @@ func _try_whistle_pikmin(body: Node3D) -> void:
 	elif body.current_state == body.State.WORKING:
 		body.detach_from_carryable()
 		body.current_state = body.State.FOLLOWING
+		_idle_pikmin_container.remove_child(body)
 		_squad_pikmin_container.add_child(body)
 		_pikmin_list.append(body)
 		body.player = self
+	_formation_dirty = true
 
 func add_follow_point():
 	_follow_count += 1

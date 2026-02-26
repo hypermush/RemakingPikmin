@@ -1,9 +1,6 @@
-extends StaticBody3D
+class_name DevWall
+extends Workable
 
-@export var max_health: int = 10
-
-var current_health: int
-var is_destroyed := false
 @onready var wall_collision := $WallCollision
 @onready var wall_interaction := $WallInteraction
 @export var obstacle : NavigationObstacle3D
@@ -11,34 +8,17 @@ var is_destroyed := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	current_health = max_health
-	# this group is what pikmin look for
-	add_to_group("DestructibleWall")
-	
-	if not obstacle:
-		Log.print("Wall doesn't have nav obstacle!")
-
-func take_damage(amount: int):
-	if ! is_destroyed:
-		current_health = current_health - amount
-		Log.print("Wall health: " + str(current_health))
-		if current_health < 1:
-			destroy()
+	super()
+	add_to_group("Workable")
 		
 func destroy():
-	is_destroyed = true
+	super()  # handles is_destroyed flag + pikmin cleanup
 	wall_collision.disabled = true
 	wall_interaction.monitoring = false
 
 	var tween = create_tween()
 	tween.tween_property(self, "global_transform:origin:y", global_transform.origin.y - 5.0, 0.3)
 	await tween.finished
-
-	# Tell Pikmin to stop
-	for pikmin in get_tree().get_nodes_in_group("Pikmin"):
-		if pikmin.assigned_wall == self:
-			pikmin.assigned_wall = null
-			pikmin.current_state = pikmin.State.IDLE
 
 	# this is the part that makes it not block anymore
 	obstacle.set_affect_navigation_mesh(false)
