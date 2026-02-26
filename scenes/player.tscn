@@ -97,15 +97,19 @@ unique_name_in_owner = true
 [node name="Reticle" parent="." unique_id=769609909 instance=ExtResource("2_fcx2p")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.878482, -1.88311)
 
-[node name="RecruitmentAreaShape" type="CollisionShape3D" parent="." unique_id=1985609269]
+[node name="RecruitmentArea" type="Area3D" parent="." unique_id=1397369952]
+collision_mask = 2
+
+[node name="RecruitmentAreaShape" type="CollisionShape3D" parent="RecruitmentArea" unique_id=1985609269]
 shape = SubResource("CylinderShape3D_4o260")
-disabled = true
 
-[node name="WhistleCollision" type="CollisionShape3D" parent="." unique_id=206702519]
+[node name="WhistleArea" type="Area3D" parent="." unique_id=293815525]
+collision_mask = 2
+
+[node name="WhistleCollision" type="CollisionShape3D" parent="WhistleArea" unique_id=206702519]
 shape = SubResource("CylinderShape3D_b48de")
-disabled = true
 
-[node name="WhistleMesh" type="MeshInstance3D" parent="WhistleCollision" unique_id=395468214]
+[node name="WhistleMesh" type="MeshInstance3D" parent="WhistleArea/WhistleCollision" unique_id=395468214]
 transform = Transform3D(5, 0, 0, 0, 0.205, 0, 0, 0, 5, 0, 0, 0)
 visible = false
 mesh = SubResource("CylinderMesh_3r5jl")
