@@ -20,8 +20,8 @@ enum InteractionType {
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	_interact_zone.body_entered.connect(bodyEntered)
-	_interact_zone.body_exited.connect(bodyExited)
+	_interact_zone.body_entered.connect(_on_body_entered)
+	_interact_zone.body_exited.connect(_on_body_exited)
 	
 	# mesh way that we like
 	_uimesh.visible = false
@@ -48,13 +48,13 @@ func _process(_delta: float) -> void:
 		#_uimesh.scale = Vector3.ONE * clamp(_distance * 0.1, 0.5, 2.0)  # Adjust min/max as needed)
 		
 # trying to detect when a body enters (signal)
-func bodyEntered(body: Node3D):
+func _on_body_entered(body: Node3D):
 	if body.is_in_group("Player"):
 		body.current_interaction_zone = self  # Store reference to this zone
 		_uimesh.visible = true
 		#Log.print("Player entered interaction zone.")
 		
-func bodyExited(body: Node3D):
+func _on_body_exited(body: Node3D):
 	if body.is_in_group("Player"):
 		body.current_interaction_zone = null  # Clear reference
 		_uimesh.visible = false

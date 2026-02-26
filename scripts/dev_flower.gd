@@ -35,8 +35,8 @@ func destroy():
 
 	# Tell Pikmin to stop
 	for pikmin in get_tree().get_nodes_in_group("Pikmin"):
-		if pikmin.assigned_wall == self:
-			pikmin.assigned_wall = null
+		if pikmin.assigned_object == self:
+			pikmin.assigned_object = null
 			pikmin.current_state = pikmin.State.IDLE
 
 	# spawn in a pellet

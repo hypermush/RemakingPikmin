@@ -80,8 +80,6 @@ var camera_rotation_target := 0.0
 @export var reticle_distance: float = 10.0  # Default distance for the reticle
 
 var target_velocity = Vector3.ZERO
-var tracked_velocity = 0
-var move_input = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -112,8 +110,6 @@ func pre_generate_positions():
 		squad_formations.append(formation)  # Store it in the matching index
 
 func _process(_delta):
-	move_input.x = Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
-	move_input.z = Input.get_action_strength("move_forward") - Input.get_action_strength("move_back")
 	throw()
 	update_reticle_position()
 
@@ -294,7 +290,6 @@ func whistle_pikmin():
 				_squad_pikmin_container.add_child(pikmin)
 				_pikmin_list.append(pikmin)
 				pikmin.player = self
-				update_pikmin_follow_targets()
 			elif pikmin and (pikmin.current_state == pikmin.State.WORKING):
 				#Log.print("Dude is working!")
 				# detach from carryable
@@ -305,7 +300,7 @@ func whistle_pikmin():
 				_squad_pikmin_container.add_child(pikmin)
 				_pikmin_list.append(pikmin)
 				pikmin.player = self
-				update_pikmin_follow_targets()
+		update_pikmin_follow_targets()
 	else:
 		whistle_mesh.visible = false
 
@@ -402,7 +397,6 @@ func interact_call():
 			var space_state = get_world_3d().direct_space_state
 			var query = PhysicsShapeQueryParameters3D.new()
 			query.set_margin(0.05)
-			query.collision_mask = 0xFFFFFFFF
 			query.set_shape($InteractionArea.shape)
 			query.transform = $InteractionArea.global_transform
 			query.collision_mask = 16  # Use a new layer just for seeds

@@ -59,8 +59,8 @@ func _process(_delta: float) -> void:
 			current_pikmin = point.assigned_pikmin
 			if current_pikmin:
 				current_pikmin.detach_from_carryable()
-			if current_pikmin.player and current_pikmin.player.has_method("add_pikmin_to_idle"):
-				current_pikmin.player.add_pikmin_to_idle(current_pikmin)
+				if current_pikmin.player and current_pikmin.player.has_method("add_pikmin_to_idle"):
+					current_pikmin.player.add_pikmin_to_idle(current_pikmin)
 		# trigger event at destination
 		emit_signal("reached_destination", {"value": value})
 		#Log.print("Signal emitted?")

@@ -43,4 +43,5 @@ func print(message: String) -> void:
 		if rich_text_label:
 			rich_text_label.append_text(message + "\n")			
 
+#	Uncomment this to get the output in the output window as well
 	print(message)

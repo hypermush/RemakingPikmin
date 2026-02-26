@@ -2,8 +2,6 @@
 extends CharacterBody3D
 
 var gravity = 9.8
-var throw_upward_speed = 10
-var throw_forward_speed = 10
 
 # Pikmin states
 enum State {
@@ -26,8 +24,9 @@ var _last_wall_hit_time := 0
 # ideally, we don't need a var for each type of interactable
 var assigned_object: Node3D = null
 var _last_wall_object_time := 0
-# currently this is made to be a flower and not a wall^
-# todo is generalizing this
+
+var assigned_target: Node3D = null
+var _last_target_hit_time := 0
 
 @onready var _detection_area: Area3D = $DetectionRadius
 
@@ -71,8 +70,6 @@ func _process(delta: float) -> void:
 			idle_state(delta)
 		State.GATHERING:
 			gathering_state(delta)
-		State.THROWN:
-			thrown_state_update(delta)
 		State.POSITIONING:
 			positioning_state(delta)
 		
@@ -251,7 +248,7 @@ func start_throw(origin_transform: Transform3D, direction: Vector3, reticle_dist
 	# Calculate the required initial velocity using kinematic equations
 	var angle = 45.0 * (PI / 180)  # 45 degrees for a balanced arc (you can adjust this)
 	var initial_speed = sqrt((gravity * horizontal_distance * horizontal_distance) / (2 * (horizontal_distance * tan(angle) - vertical_distance) * cos(angle) * cos(angle)))
-
+	
 	# Calculate the horizontal and vertical components of the velocity
 	var horizontal_velocity = initial_speed * cos(angle)
 	var vertical_velocity = initial_speed * sin(angle)

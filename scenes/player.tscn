@@ -1,6 +1,6 @@
-[gd_scene load_steps=16 format=3 uid="uid://x0f6skrphdbu"]
+[gd_scene format=3 uid="uid://x0f6skrphdbu"]
 
-[ext_resource type="Script" path="res://scripts/player.gd" id="1_0nf4c"]
+[ext_resource type="Script" uid="uid://bumg74y44r1vq" path="res://scripts/player.gd" id="1_0nf4c"]
 [ext_resource type="PackedScene" uid="uid://jqnyg6i7slnu" path="res://scenes/new_reticle.tscn" id="2_fcx2p"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qrdrg"]
@@ -51,64 +51,64 @@ material = SubResource("StandardMaterial3D_qmkms")
 height = 0.734492
 radius = 1.55111
 
-[node name="Player" type="CharacterBody3D" groups=["Player"]]
+[node name="Player" type="CharacterBody3D" unique_id=1175087883 groups=["Player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_mask = 45
 script = ExtResource("1_0nf4c")
 
-[node name="PlayerSkin" type="MeshInstance3D" parent="."]
+[node name="PlayerSkin" type="MeshInstance3D" parent="." unique_id=601291194]
 unique_name_in_owner = true
 
-[node name="DebugSpawnPoint" type="Node3D" parent="PlayerSkin"]
+[node name="DebugSpawnPoint" type="Node3D" parent="PlayerSkin" unique_id=1172328101]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 5.01381)
 
-[node name="FollowSource" type="Node3D" parent="PlayerSkin"]
+[node name="FollowSource" type="Node3D" parent="PlayerSkin" unique_id=841300112]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 2)
 
-[node name="Body" type="MeshInstance3D" parent="PlayerSkin"]
+[node name="Body" type="MeshInstance3D" parent="PlayerSkin" unique_id=1644922142]
 mesh = SubResource("CapsuleMesh_53max")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerSkin/Body"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerSkin/Body" unique_id=345698992]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.413141, -0.430316)
 mesh = SubResource("SphereMesh_jk1b4")
 
-[node name="Helmet" type="MeshInstance3D" parent="PlayerSkin"]
+[node name="Helmet" type="MeshInstance3D" parent="PlayerSkin" unique_id=212896]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.531249, 0)
 mesh = SubResource("SphereMesh_oslwi")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=271541244]
 shape = SubResource("ConvexPolygonShape3D_wq2mh")
 
-[node name="CameraPivot" type="Node3D" parent="."]
+[node name="CameraPivot" type="Node3D" parent="." unique_id=43332150]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 0.816137, 0.577858, 0, -0.577858, 0.816137, 0, 0.562086, 0)
 
-[node name="CameraSpringArm" type="SpringArm3D" parent="CameraPivot"]
+[node name="CameraSpringArm" type="SpringArm3D" parent="CameraPivot" unique_id=1203149156]
 unique_name_in_owner = true
 shape = SubResource("SphereShape3D_jouno")
 spring_length = 4.0
 
-[node name="Camera3D" type="Camera3D" parent="CameraPivot/CameraSpringArm"]
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/CameraSpringArm" unique_id=1264153951]
 unique_name_in_owner = true
 
-[node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="."]
+[node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="." unique_id=163758642]
 
-[node name="Reticle" parent="." instance=ExtResource("2_fcx2p")]
+[node name="Reticle" parent="." unique_id=769609909 instance=ExtResource("2_fcx2p")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.878482, -1.88311)
 
-[node name="RecruitmentAreaShape" type="CollisionShape3D" parent="."]
+[node name="RecruitmentAreaShape" type="CollisionShape3D" parent="." unique_id=1985609269]
 shape = SubResource("CylinderShape3D_4o260")
 disabled = true
 
-[node name="WhistleCollision" type="CollisionShape3D" parent="."]
+[node name="WhistleCollision" type="CollisionShape3D" parent="." unique_id=206702519]
 shape = SubResource("CylinderShape3D_b48de")
 disabled = true
 
-[node name="WhistleMesh" type="MeshInstance3D" parent="WhistleCollision"]
+[node name="WhistleMesh" type="MeshInstance3D" parent="WhistleCollision" unique_id=395468214]
 transform = Transform3D(5, 0, 0, 0, 0.205, 0, 0, 0, 5, 0, 0, 0)
 visible = false
 mesh = SubResource("CylinderMesh_3r5jl")
 
-[node name="InteractionArea" type="CollisionShape3D" parent="."]
+[node name="InteractionArea" type="CollisionShape3D" parent="." unique_id=70833431]
 shape = SubResource("CylinderShape3D_kewni")
