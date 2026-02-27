@@ -10,6 +10,7 @@ var lift := 0 # this is how many are carrying
 @export var carry_point_scene: PackedScene  # Drag a debug sphere or marker here
 @export var carry_radius: float = 1.0  # Distance from center to place points
 @export var carry_destination: Node3D
+@export var goes_to_ship: bool = false
 var _carry_buffer := 0.3
 var _complete := false
 @onready var collision_shape: CollisionShape3D = %CarryableCollision
@@ -29,25 +30,32 @@ func _ready() -> void:
 	if weight <= 0:
 		Log.print("Warning: Carryable item has no weight.")
 		return
-	if not carry_destination:
-		Log.print("No carry destination set, using Global")
-		carry_destination = GlobalRefs.onion
-		Log.print("carry dest set to: " + str(carry_destination))
-		
-	# this group is what pikmin look for
+
 	add_to_group("carryable")
-	
+
 	# Determine carry radius dynamically from the shape
 	if collision_shape.shape is CylinderShape3D:
-		var cylinder_shape := collision_shape.shape as CylinderShape3D
-		carry_radius += _carry_buffer  # Add a small buffer
-		#Log.print("Carry radius set to: " + str(carry_radius))
+		carry_radius += _carry_buffer
 	else:
 		Log.print("Warning: Collision shape is not a cylinder. Using default radius.")
-	
+
 	generate_carry_points()
-	
-	# connect to destination for signalling
+
+	# Defer destination resolution so all nodes finish _ready() first.
+	# This ensures GlobalRefs.ship/onion are populated before we read them.
+	call_deferred("_resolve_destination")
+
+func _resolve_destination() -> void:
+	if goes_to_ship:
+		carry_destination = GlobalRefs.ship
+	elif not carry_destination:
+		carry_destination = GlobalRefs.onion
+
+	if not carry_destination:
+		Log.print("Warning: carry destination not set in GlobalRefs")
+		return
+
+	Log.print("carry dest set to: " + str(carry_destination))
 	connect("reached_destination", Callable(carry_destination, "_on_carryable_reached_destination"))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

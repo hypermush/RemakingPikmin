@@ -344,6 +344,8 @@ func _on_whistle_body_entered(body: Node3D) -> void:
 func _try_whistle_pikmin(body: Node3D) -> void:
 	if not body.is_in_group("Pikmin"):
 		return
+	if body.is_queued_for_deletion():
+		return
 	if body.current_state == body.State.WAITING or body.current_state == body.State.IDLE:
 		body.current_state = body.State.FOLLOWING
 		_idle_pikmin_container.remove_child(body)

@@ -35,6 +35,51 @@ var target_position: Vector3  # The Pikmin's assigned spot in the zone
 
 const SPEED = 4.0
 
+# Pikmin strength progression: leaf → bud → flower
+enum Strength { LEAF, BUD, FLOWER }
+var strength: Strength = Strength.LEAF
+
+func upgrade_strength() -> void:
+	if strength < Strength.FLOWER:
+		strength += 1
+		_update_strength_visuals()
+
+func get_damage() -> int:
+	match strength:
+		Strength.LEAF:   return 1
+		Strength.BUD:    return 2
+		Strength.FLOWER: return 3
+	return 1
+
+func get_speed() -> float:
+	match strength:
+		Strength.LEAF:   return SPEED
+		Strength.BUD:    return SPEED * 1.2
+		Strength.FLOWER: return SPEED * 1.5
+	return SPEED
+
+func _update_strength_visuals() -> void:
+	var body_mesh = $MeshInstance3D
+	var mat = StandardMaterial3D.new()
+	match strength:
+		Strength.BUD:    mat.albedo_color = Color(1.0, 1.0, 0.0)  # yellow
+		Strength.FLOWER: mat.albedo_color = Color(1.0, 1.0, 1.0)  # white
+	body_mesh.set_surface_override_material(0, mat)
+
+func take_damage(_amount: int) -> void:
+	# Remove from player squad tracking
+	if player:
+		player._pikmin_list.erase(self)
+		player._formation_dirty = true
+	# Release carry point if currently carrying
+	if assigned_carry_point and carryable_target:
+		carryable_target.release_carry_point(assigned_carry_point)
+		assigned_carry_point = null
+		if get_parent() == carryable_target:
+			carryable_target.remove_child(self)
+		carryable_target = null
+	queue_free()
+
 func _ready():
 	_navigation_agent.avoidance_enabled = true  # Not sure if this results in more organic movement
 	_navigation_agent.path_desired_distance = 0.1  # Lower to allow finer control to the path
@@ -80,7 +125,7 @@ func _physics_process(delta):
 				if not _navigation_agent.is_navigation_finished():
 					var next_position = _navigation_agent.get_next_path_position()
 					var direction = (next_position - global_transform.origin).normalized()
-					velocity = direction * SPEED
+					velocity = direction * get_speed()
 				else:
 					# ✅ Lock in: stop navigating and reparent
 					#Log.print("Pikmin reached carry point!")
@@ -121,7 +166,20 @@ func _physics_process(delta):
 			
 		State.WORKING:
 			if assigned_target:
-				# Face the wall
+				# Navigate toward enemies (they move)
+				if assigned_target.is_in_group("enemy"):
+					var enemy_pos = assigned_target.global_position
+					enemy_pos.y = 0.0
+					_navigation_agent.set_target_position(enemy_pos)
+					if not _navigation_agent.is_navigation_finished():
+						var next_pos = _navigation_agent.get_next_path_position()
+						var dir = (next_pos - global_position).normalized()
+						velocity = dir * get_speed()
+						move_and_slide()
+					else:
+						velocity = Vector3.ZERO
+
+				# Face the target
 				var look_position = assigned_target.global_transform.origin
 				look_position.y = global_transform.origin.y  # Keep it on the same Y plane
 				look_at(look_position, Vector3.UP)
@@ -133,11 +191,14 @@ func _physics_process(delta):
 					# Animate
 					scale = Vector3(1.1, 0.9, 1.1)
 					await get_tree().create_timer(0.1).timeout
+					# Guard: this Pikmin may have been killed during the await
+					if is_queued_for_deletion():
+						return
 					scale = Vector3.ONE
 
 					# Recheck before dealing damage
 					if assigned_target and not assigned_target.is_destroyed:
-						assigned_target.take_damage(1)
+						assigned_target.take_damage(get_damage())
 					else:
 						# Stop working if wall is gone
 						assigned_target = null
@@ -159,7 +220,7 @@ func _physics_process(delta):
 		var distance = global_transform.origin.distance_to(target_position)
 
 		if distance > 0.1:
-			velocity = direction * SPEED
+			velocity = direction * get_speed()
 		else:
 			velocity = Vector3.ZERO
 	else:
@@ -265,7 +326,10 @@ func _on_area_entered(area: Area3D):
 		assigned_target = item
 		current_state = State.WORKING
 		snap_to_ground()
-		
+	elif item.is_in_group("enemy"):
+		assigned_target = item
+		current_state = State.WORKING
+
 func detach_from_carryable():
 	if assigned_carry_point and carryable_target:
 		#Log.print("Releasing a pikmin?")

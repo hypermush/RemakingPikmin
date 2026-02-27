@@ -19,12 +19,12 @@ var launch_time = 1.5  # seconds
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if not destination_type:
-		Log.print("Destination is missing type!")
+	if destination_type == DestinationType.SHIP:
+		GlobalRefs.ship = self
 		return
 
 	if destination_type != DestinationType.ONION:
-		return  # No further setup needed if not an onion
+		return
 
 	# Onion-specific setup
 	if not seed_scene:
@@ -50,6 +50,10 @@ func _on_carryable_reached_destination(payload: Dictionary):
 	if destination_type == DestinationType.ONION:
 		if payload.has("value"):
 			_spawn_pikmin_seeds(payload["value"])
+	elif destination_type == DestinationType.SHIP:
+		var value = payload.get("value", 0)
+		GlobalRefs.treasure_count += value
+		GlobalRefs.emit_signal("treasure_count_changed", GlobalRefs.treasure_count)
 			
 func _spawn_pikmin_seeds(count: int):
 	for i in count:

@@ -25,6 +25,7 @@ Log="*res://scripts/Log.gd"
 BackgroundMusic="*res://scripts/singletons/BackgroundMusic.gd"
 SoundEffects="*res://scripts/singletons/SoundEffects.gd"
 GlobalRefs="*res://scripts/singletons/GlobalRefs.gd"
+DayTimer="*res://scripts/day_timer.gd"
 
 [display]
 
